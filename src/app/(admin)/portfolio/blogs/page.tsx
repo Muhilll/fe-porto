@@ -21,6 +21,7 @@ import {
   ModalFooter,
   ModalClose,
 } from "@/components/ui/modal";
+import { ProjectRichEditor } from "@/components/portfolio/shared/project-rich-editor";
 import {
   BookOpen,
   Plus,
@@ -48,6 +49,18 @@ import {
   Quote,
 } from "lucide-react";
 
+const BLOG_CATEGORIES = [
+  "Architecture",
+  "Full-Stack",
+  "Backend / API",
+  "Frontend",
+  "Database",
+  "DevOps & Cloud",
+  "Performance",
+  "Security",
+  "General",
+];
+
 const initialFormState: CreateBlogPayload = {
   title: "",
   slug: "",
@@ -73,7 +86,8 @@ function generateSlug(text: string): string {
 
 function calculateReadingTime(content: string): string {
   if (!content) return "1 min read";
-  const words = content.trim().split(/\s+/).length;
+  const clean = content.replace(/<[^>]*>/g, " ").trim();
+  const words = clean.split(/\s+/).filter(Boolean).length;
   const minutes = Math.max(1, Math.ceil(words / 200));
   return `${minutes} min read`;
 }
@@ -596,465 +610,258 @@ export default function PortfolioBlogsManagementPage() {
 
       {/* Create / Edit Modal */}
       <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)} className="max-w-4xl max-h-[92vh]">
-        <div className="w-full flex flex-col">
-          <ModalHeader className="border-b border-border/60 pb-4">
-            <ModalTitle className="text-lg font-bold text-foreground flex items-center justify-between">
-              <span>{editingBlog ? "Edit Artikel" : "Tulis Artikel Baru"}</span>
-              <div className="flex items-center gap-1 bg-muted p-1 rounded-xl text-xs">
-                <button
-                  type="button"
-                  onClick={() => setActiveTab("write")}
-                  className={`px-3 py-1 rounded-lg font-medium transition-all cursor-pointer ${
-                    activeTab === "write"
-                      ? "bg-background text-foreground shadow-sm"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  Editor
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveTab("preview")}
-                  className={`px-3 py-1 rounded-lg font-medium transition-all cursor-pointer ${
-                    activeTab === "preview"
-                      ? "bg-background text-foreground shadow-sm"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  Live Preview
-                </button>
+        <ModalHeader>
+          <ModalTitle>{editingBlog ? "Sunting Artikel" : "Tambah Artikel Baru"}</ModalTitle>
+          <ModalClose onClose={() => setIsModalOpen(false)} />
+        </ModalHeader>
+
+        <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
+          <ModalBody className="space-y-4">
+            {/* Title & Slug */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-medium text-foreground mb-1">
+                  Judul Artikel <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={formData.title}
+                  onChange={(e) => handleTitleChange(e.target.value)}
+                  placeholder="Architecting High-Throughput APIs with Hono & Bun"
+                  className="w-full rounded-lg border border-input bg-background px-3 py-2 text-xs text-foreground focus:border-blue-600 focus:outline-none"
+                />
               </div>
-            </ModalTitle>
-          </ModalHeader>
 
-          <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
-            <ModalBody className="flex-1 overflow-y-auto space-y-6 py-5">
-              {activeTab === "write" ? (
-                <>
-                  {/* Title & Slug */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-1.5 sm:col-span-2">
-                      <label className="text-xs font-mono font-medium text-foreground">
-                        Judul Artikel *
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={formData.title}
-                        onChange={(e) => handleTitleChange(e.target.value)}
-                        placeholder="e.g. Architecting High-Throughput APIs with Hono & Bun"
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-border/80 bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/20"
-                      />
-                    </div>
+              <div>
+                <label className="block text-xs font-medium text-foreground mb-1">
+                  Slug URL <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={formData.slug}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, slug: e.target.value }))}
+                  placeholder="architecting-high-throughput-apis"
+                  className="w-full rounded-lg border border-input bg-background px-3 py-2 text-xs text-foreground focus:border-blue-600 focus:outline-none font-mono"
+                />
+              </div>
+            </div>
 
-                    <div className="space-y-1.5">
-                      <label className="text-xs font-mono font-medium text-foreground">
-                        Slug URL *
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={formData.slug}
-                        onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                        placeholder="architecting-high-throughput-apis"
-                        className="w-full px-3.5 py-2 rounded-xl border border-border/80 bg-background text-xs font-mono text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/20"
-                      />
-                      <span className="text-[11px] text-muted-foreground font-mono">
-                        Preview: /blog/{formData.slug || "url-slug"}
-                      </span>
-                    </div>
+            {/* Category, Published Date, Featured, Publish Status */}
+            <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+              <div>
+                <label className="block text-xs font-medium text-foreground mb-1">Kategori</label>
+                <select
+                  value={formData.category}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, category: e.target.value }))}
+                  className="w-full rounded-lg border border-input bg-background px-2.5 py-2 text-xs text-foreground focus:border-blue-600 focus:outline-none"
+                >
+                  {BLOG_CATEGORIES.map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-                    <div className="space-y-1.5">
-                      <label className="text-xs font-mono font-medium text-foreground">
-                        Kategori *
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={formData.category}
-                        onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                        placeholder="Architecture / Database / Frontend / Security"
-                        className="w-full px-3.5 py-2 rounded-xl border border-border/80 bg-background text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/20"
-                      />
-                    </div>
-                  </div>
+              <div>
+                <label className="block text-xs font-medium text-foreground mb-1">Tanggal Terbit</label>
+                <input
+                  type="text"
+                  value={formData.published_at}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, published_at: e.target.value }))}
+                  placeholder={formatTodayDate()}
+                  className="w-full rounded-lg border border-input bg-background px-3 py-2 text-xs text-foreground focus:border-blue-600 focus:outline-none"
+                />
+              </div>
 
-                  {/* Metadata: Date, Read Time, Cover, Toggles */}
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 rounded-2xl bg-muted/30 border border-border/60">
-                    <div className="space-y-1.5">
-                      <label className="text-xs font-mono font-medium text-foreground">
-                        Tanggal Terbit
-                      </label>
-                      <input
-                        type="text"
-                        value={formData.published_at}
-                        onChange={(e) => setFormData({ ...formData, published_at: e.target.value })}
-                        placeholder="March 15, 2024"
-                        className="w-full px-3 py-1.5 rounded-xl border border-border/80 bg-background text-xs text-foreground"
-                      />
-                    </div>
+              <div className="flex flex-col justify-end">
+                <label className="flex items-center gap-2 cursor-pointer h-9 px-3 rounded-lg border border-input bg-muted/20">
+                  <input
+                    type="checkbox"
+                    checked={formData.featured}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, featured: e.target.checked }))}
+                    className="size-3.5 rounded text-blue-600 focus:ring-blue-600"
+                  />
+                  <span className="text-xs font-medium text-foreground flex items-center gap-1">
+                    <Star className="size-3 text-amber-500 fill-amber-500" /> Featured
+                  </span>
+                </label>
+              </div>
 
-                    <div className="space-y-1.5">
-                      <label className="text-xs font-mono font-medium text-foreground">
-                        Estimasi Waktu Baca
-                      </label>
-                      <input
-                        type="text"
-                        value={formData.read_time}
-                        onChange={(e) => setFormData({ ...formData, read_time: e.target.value })}
-                        placeholder="6 min read"
-                        className="w-full px-3 py-1.5 rounded-xl border border-border/80 bg-background text-xs text-foreground"
-                      />
-                    </div>
+              <div className="flex flex-col justify-end">
+                <label className="flex items-center gap-2 cursor-pointer h-9 px-3 rounded-lg border border-input bg-muted/20">
+                  <input
+                    type="checkbox"
+                    checked={formData.is_published}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, is_published: e.target.checked }))}
+                    className="size-3.5 rounded text-blue-600 focus:ring-blue-600"
+                  />
+                  <span className="text-xs font-medium text-foreground flex items-center gap-1">
+                    <CheckCircle2 className="size-3 text-emerald-500" /> Publikasikan
+                  </span>
+                </label>
+              </div>
+            </div>
 
-                    <div className="flex items-center gap-4 pt-4 sm:pt-6">
-                      <label className="flex items-center gap-2 text-xs font-mono text-foreground cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={formData.is_published}
-                          onChange={(e) =>
-                            setFormData({ ...formData, is_published: e.target.checked })
-                          }
-                          className="rounded text-foreground focus:ring-0"
-                        />
-                        <span>Publish</span>
-                      </label>
+            {/* Cover Image Upload */}
+            <div>
+              <label className="block text-xs font-medium text-foreground mb-1">
+                Cover Image URL (Opsional)
+              </label>
 
-                      <label className="flex items-center gap-2 text-xs font-mono text-foreground cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={formData.featured}
-                          onChange={(e) => setFormData({ ...formData, featured: e.target.checked })}
-                          className="rounded text-foreground focus:ring-0"
-                        />
-                        <span>Featured</span>
-                      </label>
-                    </div>
-                  </div>
-
-                  {/* Excerpt */}
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-mono font-medium text-foreground">
-                      Ringkasan Singkat (Excerpt)
-                    </label>
-                    <textarea
-                      rows={2}
-                      value={formData.excerpt}
-                      onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
-                      placeholder="Ringkasan 1-2 kalimat untuk preview di feed artikel..."
-                      className="w-full px-3.5 py-2 rounded-xl border border-border/80 bg-background text-xs text-foreground resize-y focus:outline-none focus:ring-2 focus:ring-foreground/20"
-                    />
-                  </div>
-
-                  {/* Cover Image Upload */}
-                  <div className="space-y-2">
-                    <label className="text-xs font-mono font-medium text-foreground">
-                      Cover Image (Opsional)
-                    </label>
-                    <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
-                      <input
-                        type="text"
-                        value={formData.cover_image || ""}
-                        onChange={(e) => setFormData({ ...formData, cover_image: e.target.value })}
-                        placeholder="https://images.unsplash.com/... atau upload"
-                        className="flex-1 px-3.5 py-2 rounded-xl border border-border/80 bg-background text-xs text-foreground"
-                      />
-                      <label className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-border bg-background hover:bg-muted text-xs font-semibold text-foreground cursor-pointer transition-colors">
-                        <Upload className="w-3.5 h-3.5" />
-                        <span>{isUploading ? "Mengupload..." : "Upload Cover"}</span>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={handleFileUpload}
-                          disabled={isUploading}
-                          className="hidden"
-                        />
-                      </label>
-                    </div>
-                    {formData.cover_image && (
-                      <div className="relative aspect-[21/9] w-full max-w-sm rounded-xl overflow-hidden border border-border/80 bg-muted">
-                        <Image
-                          src={formData.cover_image}
-                          alt="Cover preview"
-                          fill
-                          unoptimized
-                          className="object-cover"
-                        />
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Tags */}
-                  <div className="space-y-2">
-                    <label className="text-xs font-mono font-medium text-foreground">
-                      Tags Topik
-                    </label>
-                    <div className="flex gap-2">
-                      <input
-                        type="text"
-                        value={newTagInput}
-                        onChange={(e) => setNewTagInput(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") {
-                            e.preventDefault();
-                            handleAddTag();
-                          }
-                        }}
-                        placeholder="e.g. Next.js, Hono, TypeScript"
-                        className="flex-1 px-3.5 py-2 rounded-xl border border-border/80 bg-background text-xs text-foreground"
-                      />
-                      <button
-                        type="button"
-                        onClick={handleAddTag}
-                        className="px-3.5 py-2 rounded-xl border border-border bg-background hover:bg-muted text-xs font-semibold text-foreground cursor-pointer"
-                      >
-                        Tambah Tag
-                      </button>
-                    </div>
-                    {formData.tags && formData.tags.length > 0 && (
-                      <div className="flex flex-wrap gap-1.5 pt-1">
-                        {formData.tags.map((tag) => (
-                          <span
-                            key={tag}
-                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-mono bg-muted text-foreground border border-border/60"
-                          >
-                            <span>#{tag}</span>
-                            <button
-                              type="button"
-                              onClick={() => handleRemoveTag(tag)}
-                              className="text-muted-foreground hover:text-foreground"
-                            >
-                              <X className="w-3 h-3" />
-                            </button>
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Markdown Content Editor */}
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <label className="text-xs font-mono font-medium text-foreground">
-                        Konten Artikel (Markdown Format) *
-                      </label>
-                      <span className="text-[11px] font-mono text-muted-foreground">
-                        {formData.content?.trim().split(/\s+/).filter(Boolean).length || 0} kata
-                      </span>
-                    </div>
-
-                    {/* Markdown Quick Toolbar */}
-                    <div className="flex flex-wrap items-center gap-1 p-1.5 rounded-xl bg-muted/60 border border-border/60 text-xs">
-                      <button
-                        type="button"
-                        onClick={() => insertMarkdownSnippet("### ")}
-                        className="p-1.5 rounded-lg hover:bg-background text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                        title="Subheading (###)"
-                      >
-                        <Heading2 className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => insertMarkdownSnippet("#### ")}
-                        className="p-1.5 rounded-lg hover:bg-background text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                        title="H4 (####)"
-                      >
-                        <Heading3 className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => insertMarkdownSnippet("**", "**")}
-                        className="p-1.5 rounded-lg hover:bg-background text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                        title="Tebal (**teks**)"
-                      >
-                        <Bold className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => insertMarkdownSnippet("```typescript\n", "\n```")}
-                        className="p-1.5 rounded-lg hover:bg-background text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                        title="Code block"
-                      >
-                        <Code className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => insertMarkdownSnippet("* ")}
-                        className="p-1.5 rounded-lg hover:bg-background text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                        title="Bullet list (* )"
-                      >
-                        <List className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => insertMarkdownSnippet("1. ")}
-                        className="p-1.5 rounded-lg hover:bg-background text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                        title="Numbered list (1. )"
-                      >
-                        <ListOrdered className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => insertMarkdownSnippet("> ")}
-                        className="p-1.5 rounded-lg hover:bg-background text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                        title="Kutipan (> )"
-                      >
-                        <Quote className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-
-                    <textarea
-                      id="blog-content-textarea"
-                      required
-                      rows={12}
-                      value={formData.content}
-                      onChange={(e) => handleContentChange(e.target.value)}
-                      placeholder="Tulis artikel menggunakan format Markdown standar..."
-                      className="w-full px-4 py-3 rounded-xl border border-border/80 bg-background text-xs font-mono text-foreground leading-relaxed resize-y focus:outline-none focus:ring-2 focus:ring-foreground/20"
-                    />
-                  </div>
-                </>
-              ) : (
-                /* Live Preview Tab */
-                <div className="space-y-6 max-w-3xl mx-auto p-4 rounded-2xl border border-border/80 bg-background">
-                  <div className="space-y-3 pb-6 border-b border-border/60">
-                    <div className="flex flex-wrap items-center gap-2 text-xs font-mono text-muted-foreground">
-                      <span className="px-2.5 py-0.5 rounded-full bg-muted text-foreground border border-border/60 font-medium">
-                        {formData.category}
-                      </span>
-                      <span>{formData.published_at || "Recently"}</span>
-                      <span>•</span>
-                      <span>{formData.read_time || "5 min read"}</span>
-                    </div>
-
-                    <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
-                      {formData.title || "Judul Artikel"}
-                    </h1>
-
-                    {formData.excerpt && (
-                      <p className="text-sm text-muted-foreground leading-relaxed">
-                        {formData.excerpt}
-                      </p>
-                    )}
-
-                    {formData.tags && formData.tags.length > 0 && (
-                      <div className="flex flex-wrap gap-1.5 pt-1">
-                        {formData.tags.map((t) => (
-                          <span
-                            key={t}
-                            className="px-2 py-0.5 rounded text-[11px] font-mono bg-muted/60 text-muted-foreground"
-                          >
-                            #{t}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-
-                  {formData.cover_image && (
-                    <div className="relative aspect-[16/9] w-full rounded-2xl overflow-hidden border border-border/60 bg-muted">
-                      <Image
-                        src={formData.cover_image}
-                        alt="Cover"
-                        fill
-                        unoptimized
-                        className="object-cover"
-                      />
-                    </div>
-                  )}
-
-                  {/* Rendered Markdown Preview */}
-                  <div className="space-y-4 text-foreground/90 text-sm leading-relaxed">
-                    {formData.content ? (
-                      formData.content.split("\n\n").map((paragraph, index) => {
-                        const trimmed = paragraph.trim();
-                        if (trimmed.startsWith("### ")) {
-                          return (
-                            <h2
-                              key={index}
-                              className="text-xl font-semibold tracking-tight text-foreground pt-4 pb-1"
-                            >
-                              {trimmed.replace("### ", "")}
-                            </h2>
-                          );
-                        }
-                        if (trimmed.startsWith("```")) {
-                          const codeLines = trimmed.replace(/```[a-z]*/g, "").trim();
-                          return (
-                            <pre
-                              key={index}
-                              className="p-4 rounded-xl bg-muted/80 border border-border/80 font-mono text-xs overflow-x-auto my-4 text-foreground"
-                            >
-                              <code>{codeLines}</code>
-                            </pre>
-                          );
-                        }
-                        if (trimmed.startsWith("* ")) {
-                          const items = trimmed
-                            .split("\n* ")
-                            .map((item) => item.replace("* ", ""));
-                          return (
-                            <ul
-                              key={index}
-                              className="space-y-1 list-disc list-inside text-muted-foreground"
-                            >
-                              {items.map((it, i) => (
-                                <li key={i}>{it}</li>
-                              ))}
-                            </ul>
-                          );
-                        }
-                        if (trimmed.startsWith("1. ")) {
-                          const items = trimmed
-                            .split(/\n\d+\.\s/)
-                            .map((item) => item.replace(/^\d+\.\s/, ""));
-                          return (
-                            <ol
-                              key={index}
-                              className="space-y-1 list-decimal list-inside text-muted-foreground"
-                            >
-                              {items.map((it, i) => (
-                                <li key={i}>{it}</li>
-                              ))}
-                            </ol>
-                          );
-                        }
-                        return (
-                          <p key={index} className="text-muted-foreground leading-relaxed">
-                            {trimmed}
-                          </p>
-                        );
-                      })
-                    ) : (
-                      <p className="text-muted-foreground italic">Konten artikel masih kosong...</p>
-                    )}
-                  </div>
+              {formData.cover_image && (
+                <div className="relative aspect-video w-full max-h-36 rounded-lg overflow-hidden border border-border mb-2 bg-muted">
+                  <img src={formData.cover_image} alt="Cover Preview" className="size-full object-cover" />
                 </div>
               )}
-            </ModalBody>
 
-            <ModalFooter className="border-t border-border/60 pt-4 flex justify-end gap-2">
-              <button
-                type="button"
-                onClick={() => setIsModalOpen(false)}
-                className="px-4 py-2 rounded-xl border border-border bg-background hover:bg-muted text-xs font-semibold text-foreground transition-colors cursor-pointer"
-              >
-                Batal
-              </button>
-              <button
-                type="submit"
-                disabled={createMutation.isPending || updateMutation.isPending}
-                className="px-5 py-2 rounded-xl bg-foreground text-background text-xs font-semibold hover:opacity-90 disabled:opacity-50 transition-opacity cursor-pointer shadow-sm"
-              >
-                {createMutation.isPending || updateMutation.isPending
-                  ? "Menyimpan..."
-                  : editingBlog
-                  ? "Perbarui Artikel"
-                  : "Terbitkan Artikel"}
-              </button>
-            </ModalFooter>
-          </form>
-        </div>
+              <div className="flex gap-2">
+                <input
+                  type="url"
+                  value={formData.cover_image || ""}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, cover_image: e.target.value }))}
+                  placeholder="https://images.unsplash.com/... atau upload"
+                  className="flex-1 rounded-lg border border-input bg-background px-3 py-2 text-xs text-foreground focus:border-blue-600 focus:outline-none"
+                />
+
+                <label className="inline-flex items-center gap-1 rounded-lg border border-input bg-secondary px-3 py-2 text-xs font-medium text-secondary-foreground hover:bg-secondary/80 cursor-pointer">
+                  <Upload className="size-3.5" />
+                  <span>{isUploading ? "..." : "Upload"}</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileUpload}
+                    disabled={isUploading}
+                    className="hidden"
+                  />
+                </label>
+              </div>
+            </div>
+
+            {/* Excerpt */}
+            <div>
+              <label className="block text-xs font-medium text-foreground mb-1">Ringkasan Singkat (Excerpt)</label>
+              <textarea
+                rows={2}
+                value={formData.excerpt}
+                onChange={(e) => setFormData((prev) => ({ ...prev, excerpt: e.target.value }))}
+                placeholder="Ringkasan 1-2 kalimat untuk preview di kartu artikel..."
+                className="w-full rounded-lg border border-input bg-background px-3 py-2 text-xs text-foreground focus:border-blue-600 focus:outline-none"
+              />
+            </div>
+
+            {/* Content Editor */}
+            <div>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="block text-xs font-medium text-foreground">
+                  Konten Artikel (Tiptap Rich-Text Editor) <span className="text-red-500">*</span>
+                </label>
+                <div className="flex items-center gap-2">
+                  <span className="text-[11px] text-muted-foreground font-mono">
+                    {formData.content?.replace(/<[^>]*>/g, " ").trim().split(/\s+/).filter(Boolean).length || 0} kata • {formData.read_time || "1 min read"}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab(activeTab === "write" ? "preview" : "write")}
+                    className="text-xs text-blue-600 hover:underline cursor-pointer font-medium"
+                  >
+                    {activeTab === "write" ? "Lihat Live Preview" : "Kembali ke Editor"}
+                  </button>
+                </div>
+              </div>
+
+              {activeTab === "write" ? (
+                <ProjectRichEditor
+                  content={formData.content}
+                  onChange={(html) => handleContentChange(html)}
+                  placeholder="Tulis artikel dengan heading, gambar screenshot, kutipan, dan kode sumber..."
+                  minHeight="280px"
+                />
+              ) : (
+                <div className="p-4 rounded-xl border border-border bg-background/50 space-y-4 max-h-[400px] overflow-y-auto">
+                  <div className="border-b border-border pb-3">
+                    <span className="text-xs px-2.5 py-0.5 rounded-full bg-muted font-medium text-foreground">
+                      {formData.category}
+                    </span>
+                    <h3 className="text-lg font-bold text-foreground mt-2">{formData.title || "Judul Artikel"}</h3>
+                    <p className="text-xs text-muted-foreground mt-1">{formData.excerpt}</p>
+                  </div>
+                  <div
+                    className="prose prose-sm dark:prose-invert max-w-none"
+                    dangerouslySetInnerHTML={{ __html: formData.content }}
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* Tags Badges Input */}
+            <div>
+              <label className="block text-xs font-medium text-foreground mb-1">Tags Topik</label>
+              <div className="flex flex-wrap gap-1.5 mb-2">
+                {formData.tags?.map((tag) => (
+                  <span
+                    key={tag}
+                    className="inline-flex items-center gap-1 rounded bg-muted px-2 py-0.5 text-xs font-medium text-foreground border border-border"
+                  >
+                    #{tag}
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveTag(tag)}
+                      className="text-muted-foreground hover:text-red-500 cursor-pointer ml-0.5"
+                    >
+                      ×
+                    </button>
+                  </span>
+                ))}
+              </div>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={newTagInput}
+                  onChange={(e) => setNewTagInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleAddTag();
+                    }
+                  }}
+                  placeholder="Contoh: Next.js, Hono, Bun"
+                  className="flex-1 rounded-lg border border-input bg-background px-3 py-2 text-xs text-foreground focus:border-blue-600 focus:outline-none"
+                />
+                <button
+                  type="button"
+                  onClick={handleAddTag}
+                  className="rounded-lg border border-input bg-secondary px-3 py-2 text-xs font-medium text-secondary-foreground hover:bg-secondary/80 cursor-pointer"
+                >
+                  Tambah Tag
+                </button>
+              </div>
+            </div>
+          </ModalBody>
+
+          <ModalFooter>
+            <button
+              type="button"
+              onClick={() => setIsModalOpen(false)}
+              className="rounded-lg border border-border px-4 py-2 text-xs font-medium text-muted-foreground hover:bg-muted cursor-pointer"
+            >
+              Batal
+            </button>
+            <button
+              type="submit"
+              disabled={createMutation.isPending || updateMutation.isPending}
+              className="rounded-lg bg-blue-600 px-4 py-2 text-xs font-medium text-white hover:bg-blue-700 disabled:opacity-50 cursor-pointer transition-colors shadow-sm"
+            >
+              {createMutation.isPending || updateMutation.isPending
+                ? "Menyimpan..."
+                : editingBlog
+                ? "Simpan Perubahan"
+                : "Terbitkan Artikel"}
+            </button>
+          </ModalFooter>
+        </form>
       </Modal>
 
       {/* Delete Confirmation Modal */}

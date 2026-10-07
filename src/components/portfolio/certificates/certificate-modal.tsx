@@ -49,6 +49,7 @@ export function CertificateModal({ certificate, onClose }: CertificateModalProps
               src={certificate.image}
               alt={certificate.title}
               fill
+              unoptimized
               className="object-cover"
             />
           </div>

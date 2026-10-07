@@ -6,17 +6,21 @@ import { ArrowUpRight, CheckCircle2, Layers } from "lucide-react";
 import { GithubIcon } from "@/components/portfolio/shared/icons";
 import { motion, AnimatePresence } from "framer-motion";
 import { projectsData } from "@/data/projects";
+import { useProjects } from "@/features/portfolio/project/hooks/use-project";
+import { getNormalizedProjects } from "@/features/portfolio/adapters";
 import { SectionHeader } from "@/components/portfolio/shared/section-header";
 
 const categories = ["All", "Full-Stack", "Frontend", "Backend / API", "System / Tools"] as const;
 
 export function ProjectsShowcase() {
   const [activeCategory, setActiveCategory] = useState<string>("All");
+  const { data: apiProjects } = useProjects();
+  const allProjects = getNormalizedProjects(apiProjects);
 
   const filteredProjects =
     activeCategory === "All"
-      ? projectsData
-      : projectsData.filter((p) => p.category === activeCategory);
+      ? allProjects
+      : allProjects.filter((p) => p.category === activeCategory);
 
   return (
     <section className="py-16 sm:py-24 border-b border-border/40">
@@ -33,15 +37,16 @@ export function ProjectsShowcase() {
             {categories.map((category) => {
               const count =
                 category === "All"
-                  ? projectsData.length
-                  : projectsData.filter((p) => p.category === category).length;
+                  ? allProjects.length
+                  : allProjects.filter((p) => p.category === category).length;
 
               const isActive = activeCategory === category;
 
               return (
-                <button
+                <motion.button
                   key={category}
                   type="button"
+                  whileTap={{ scale: 0.95 }}
                   onClick={() => setActiveCategory(category)}
                   className={`relative px-4 py-2 rounded-full text-xs font-mono font-medium transition-colors ${
                     isActive
@@ -52,9 +57,9 @@ export function ProjectsShowcase() {
                   <span className="relative z-10 flex items-center gap-1.5">
                     <span>{category}</span>
                     <span
-                      className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                      className={`text-[10px] px-1.5 py-0.5 rounded-full font-mono transition-colors ${
                         isActive
-                          ? "bg-background/20 text-background"
+                          ? "bg-background/25 text-background"
                           : "bg-muted text-muted-foreground"
                       }`}
                     >
@@ -65,29 +70,33 @@ export function ProjectsShowcase() {
                   {isActive && (
                     <motion.div
                       layoutId="activeProjectCategory"
-                      className="absolute inset-0 rounded-full bg-foreground -z-0"
-                      transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                      className="absolute inset-0 rounded-full bg-foreground z-0 shadow-sm"
+                      transition={{ type: "spring", stiffness: 420, damping: 32 }}
                     />
                   )}
-                </button>
+                </motion.button>
               );
             })}
           </div>
         </div>
 
-        {/* Projects Grid */}
-        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <AnimatePresence>
+        {/* Projects Grid with Smooth popLayout Physics */}
+        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 gap-8 min-h-[400px]">
+          <AnimatePresence mode="popLayout">
             {filteredProjects.map((project) => (
               <motion.article
-                layout
+                layout="position"
                 key={project.id}
                 id={project.slug}
-                initial={{ opacity: 0, scale: 0.96 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.96 }}
-                transition={{ duration: 0.35, ease: "easeOut" }}
-                className="group flex flex-col rounded-3xl border border-border/80 bg-background/90 overflow-hidden hover:border-foreground/40 transition-all duration-300 shadow-sm hover:shadow-md"
+                initial={{ opacity: 0, scale: 0.94, y: 16 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.94, y: 12 }}
+                transition={{
+                  layout: { type: "spring", stiffness: 320, damping: 28 },
+                  opacity: { duration: 0.22, ease: "easeOut" },
+                  scale: { duration: 0.22, ease: "easeOut" },
+                }}
+                className="group flex flex-col rounded-3xl border border-border/80 bg-background/90 overflow-hidden hover:border-foreground/40 transition-colors shadow-sm hover:shadow-md"
               >
                 {/* Media Container */}
                 <div className="relative aspect-[16/9] w-full overflow-hidden bg-muted">
@@ -95,6 +104,7 @@ export function ProjectsShowcase() {
                     src={project.image}
                     alt={project.title}
                     fill
+                    unoptimized
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                   <div className="absolute top-4 left-4 flex items-center gap-2">
@@ -190,6 +200,34 @@ export function ProjectsShowcase() {
                 </div>
               </motion.article>
             ))}
+
+            {/* Empty State */}
+            {filteredProjects.length === 0 && (
+              <motion.div
+                key="empty"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 12 }}
+                className="col-span-full py-20 text-center space-y-4"
+              >
+                <div className="w-12 h-12 rounded-2xl bg-muted/60 flex items-center justify-center mx-auto text-muted-foreground">
+                  <Layers className="w-6 h-6" />
+                </div>
+                <div className="space-y-1">
+                  <h4 className="text-base font-semibold text-foreground">No projects found</h4>
+                  <p className="text-xs text-muted-foreground font-mono max-w-sm mx-auto">
+                    No engineering works cataloged under &ldquo;{activeCategory}&rdquo; at this moment.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setActiveCategory("All")}
+                  className="px-4 py-2 rounded-full text-xs font-semibold bg-foreground text-background hover:opacity-90 transition-opacity"
+                >
+                  Reset Filter
+                </button>
+              </motion.div>
+            )}
           </AnimatePresence>
         </motion.div>
       </div>

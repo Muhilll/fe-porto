@@ -2,10 +2,17 @@
 
 import Link from "next/link";
 import { ArrowUpRight, MessageSquare, Mail } from "lucide-react";
-import { profileData } from "@/data/profile";
 import { FadeIn } from "@/components/portfolio/shared/motion-wrapper";
+import { useProfile } from "@/features/portfolio/profile/hooks/use-profile";
+import { getNormalizedProfile } from "@/features/portfolio/adapters";
 
 export function HomeCta() {
+  const { data: apiProfile } = useProfile();
+  const profile = getNormalizedProfile(apiProfile);
+
+  const whatsappHref = profile.whatsapp.startsWith("http")
+    ? profile.whatsapp
+    : `https://wa.me/${profile.whatsapp.replace(/[^0-9]/g, "")}`;
   return (
     <section id="contact" className="py-20 sm:py-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -37,7 +44,7 @@ export function HomeCta() {
                 </Link>
 
                 <a
-                  href={profileData.whatsapp}
+                  href={whatsappHref}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-5 py-3 rounded-full text-sm font-medium border border-background/30 text-background hover:bg-background/10 transition-colors"
@@ -47,7 +54,7 @@ export function HomeCta() {
                 </a>
 
                 <a
-                  href={`mailto:${profileData.email}`}
+                  href={`mailto:${profile.email}`}
                   className="inline-flex items-center gap-2 px-5 py-3 rounded-full text-sm font-medium border border-background/30 text-background hover:bg-background/10 transition-colors"
                 >
                   <Mail className="w-4 h-4" />

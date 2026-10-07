@@ -22,10 +22,13 @@ export async function apiClient<T = unknown>(
   const { skipAuth, headers: customHeaders, ...fetchOpts } = options;
 
   const headers: Record<string, string> = {
-    "Content-Type": "application/json",
     "X-App-Token": APP_TOKEN,
     ...(customHeaders as Record<string, string>),
   };
+
+  if (!(fetchOpts.body instanceof FormData) && !headers["Content-Type"]) {
+    headers["Content-Type"] = "application/json";
+  }
 
   if (!skipAuth) {
     const token = getToken();

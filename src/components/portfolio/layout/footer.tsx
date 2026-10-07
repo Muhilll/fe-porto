@@ -3,15 +3,24 @@
 import Link from "next/link";
 import { ArrowUp, ArrowUpRight, Mail, MessageSquare } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "@/components/portfolio/shared/icons";
-import { profileData } from "@/data/profile";
 import { navigationItems } from "@/data/navigation";
+import { useProfile } from "@/features/portfolio/profile/hooks/use-profile";
+import { getNormalizedProfile } from "@/features/portfolio/adapters";
 
 export function PortfolioFooter() {
+  const { data: apiProfile } = useProfile();
+  const profile = getNormalizedProfile(apiProfile);
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const currentYear = new Date().getFullYear();
+  const firstLetter = (profile.shortName || profile.name || "Z").charAt(0).toUpperCase();
+
+  const whatsappHref = profile.whatsapp.startsWith("http")
+    ? profile.whatsapp
+    : `https://wa.me/${profile.whatsapp.replace(/[^0-9]/g, "")}`;
 
   return (
     <footer className="border-t border-border/80 bg-background/50 backdrop-blur-sm mt-24">
@@ -21,19 +30,19 @@ export function PortfolioFooter() {
           <div className="md:col-span-2 space-y-4">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-lg bg-foreground text-background flex items-center justify-center font-mono font-bold text-sm tracking-tight">
-                Z
+                {firstLetter}
               </div>
               <span className="font-semibold text-base tracking-tight text-foreground">
-                {profileData.name}
+                {profile.name}
               </span>
             </div>
             <p className="text-sm text-muted-foreground max-w-md leading-relaxed">
-              {profileData.tagline}
+              {profile.tagline}
             </p>
             <div className="flex items-center gap-2 pt-2">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono border border-border/80 bg-muted/40 text-muted-foreground">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span>{profileData.availabilityText}</span>
+                <span>{profile.availabilityText}</span>
               </div>
             </div>
           </div>
@@ -65,7 +74,7 @@ export function PortfolioFooter() {
             <ul className="space-y-2.5">
               <li>
                 <a
-                  href={`mailto:${profileData.email}`}
+                  href={`mailto:${profile.email}`}
                   className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors group"
                 >
                   <Mail className="w-4 h-4" />
@@ -75,7 +84,7 @@ export function PortfolioFooter() {
               </li>
               <li>
                 <a
-                  href={profileData.github}
+                  href={profile.github}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors group"
@@ -87,7 +96,7 @@ export function PortfolioFooter() {
               </li>
               <li>
                 <a
-                  href={profileData.linkedin}
+                  href={profile.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors group"
@@ -99,7 +108,7 @@ export function PortfolioFooter() {
               </li>
               <li>
                 <a
-                  href={profileData.whatsapp}
+                  href={whatsappHref}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors group"
@@ -116,7 +125,7 @@ export function PortfolioFooter() {
         {/* Bottom bar */}
         <div className="mt-12 pt-8 border-t border-border/60 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-muted-foreground font-mono">
-            © {currentYear} {profileData.name}. All rights reserved. Clean monochrome engineering.
+            © {currentYear} {profile.name}. All rights reserved. Clean monochrome engineering.
           </p>
           <button
             type="button"

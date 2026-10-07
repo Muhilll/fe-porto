@@ -34,6 +34,17 @@ import * as LucideIcons from "lucide-react";
 import { useStore } from "@/stores/use-store";
 import { useUserNavigation } from "@/features/rbac/user/hooks/use-user";
 
+const portfolioLinks = [
+  { name: "Profile & Bio", href: "/portfolio/profile", icon: LucideIcons.UserCheck },
+  { name: "Projects CMS", href: "/portfolio/projects", icon: LucideIcons.FolderKanban },
+  { name: "Experience & Skills", href: "/portfolio/about", icon: LucideIcons.Briefcase },
+  { name: "Certificates", href: "/portfolio/certificates", icon: LucideIcons.Award },
+  { name: "Services", href: "/portfolio/services", icon: LucideIcons.Wrench },
+  { name: "Blog & Articles", href: "/portfolio/blogs", icon: LucideIcons.BookOpen },
+  { name: "Visitor Inbox", href: "/portfolio/inbox", icon: LucideIcons.Inbox },
+  { name: "View Live Site", href: "/", icon: LucideIcons.ExternalLink, external: true },
+];
+
 const overviewLinks = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Calendar", href: "/calendar", icon: Calendar },
@@ -278,6 +289,18 @@ export function AdminSidebar() {
               </div>
             </div>
           </div>
+        ) : link.external ? (
+          <a
+            href={link.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            title={!isSidebarOpen ? link.name : undefined}
+            className={`flex items-center py-2 rounded-md text-sm transition-colors w-full ${isSidebarOpen ? "gap-3 px-2" : "justify-center"
+              } text-muted-foreground hover:bg-muted hover:text-foreground`}
+          >
+            <Icon className="size-5 shrink-0 text-muted-foreground" />
+            {isSidebarOpen && <span className="whitespace-nowrap">{link.name}</span>}
+          </a>
         ) : (
           <Link
             href={link.href}
@@ -339,6 +362,22 @@ export function AdminSidebar() {
               ) : (
                 <div className="px-4 py-2 text-xs text-muted-foreground">Tidak ada menu tersedia.</div>
               )}
+            </ul>
+          </div>
+
+          <div>
+            {isSidebarOpen && (
+              <div className="flex items-center justify-between px-2 mb-2">
+                <h3 className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wider">
+                  Portfolio CMS
+                </h3>
+                <span className="text-[10px] bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 px-1.5 py-0.5 rounded font-mono">
+                  LIVE
+                </span>
+              </div>
+            )}
+            <ul className="space-y-1">
+              {portfolioLinks.map(renderLink)}
             </ul>
           </div>
 

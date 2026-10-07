@@ -1,11 +1,15 @@
 "use client";
 
-import { skillCategoriesData } from "@/data/about";
+import { useSkills } from "@/features/portfolio/about/hooks/use-about";
+import { getNormalizedSkillCategories } from "@/features/portfolio/adapters";
 import { SectionHeader } from "@/components/portfolio/shared/section-header";
 import { FadeIn } from "@/components/portfolio/shared/motion-wrapper";
 import { Check } from "lucide-react";
 
 export function SkillsGrid() {
+  const { data: apiSkills } = useSkills();
+  const skillCategories = getNormalizedSkillCategories(apiSkills);
+
   return (
     <section id="skills" className="py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
@@ -16,7 +20,7 @@ export function SkillsGrid() {
         />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {skillCategoriesData.map((cat, idx) => (
+          {skillCategories.map((cat, idx) => (
             <FadeIn key={cat.category} delay={idx * 0.1}>
               <div className="p-6 rounded-2xl border border-border/80 bg-background/90 space-y-4 h-full shadow-sm">
                 <div className="space-y-1 pb-3 border-b border-border/60">

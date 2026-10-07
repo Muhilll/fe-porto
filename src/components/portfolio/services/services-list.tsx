@@ -1,21 +1,57 @@
 "use client";
 
-import { Layout, Server, Sparkles, Zap, CheckCircle2 } from "lucide-react";
-import { servicesData } from "@/data/services";
+import {
+  Layout,
+  Server,
+  Sparkles,
+  Zap,
+  CheckCircle2,
+  Code,
+  Database,
+  Smartphone,
+  Cloud,
+  Shield,
+  Cpu,
+  Globe,
+  Terminal,
+  Bot,
+} from "lucide-react";
 import { SectionHeader } from "@/components/portfolio/shared/section-header";
 import { FadeIn } from "@/components/portfolio/shared/motion-wrapper";
+import { useServices } from "@/features/portfolio/service/hooks/use-service";
+import { getNormalizedServices } from "@/features/portfolio/adapters";
 
 export function ServicesList() {
+  const { data: apiServices } = useServices();
+  const services = getNormalizedServices(apiServices);
+
   const getIcon = (iconName: string) => {
     switch (iconName) {
-      case "Layout":
-        return <Layout className="w-5 h-5" />;
       case "Server":
         return <Server className="w-5 h-5" />;
       case "Sparkles":
         return <Sparkles className="w-5 h-5" />;
       case "Zap":
         return <Zap className="w-5 h-5" />;
+      case "Code":
+        return <Code className="w-5 h-5" />;
+      case "Database":
+        return <Database className="w-5 h-5" />;
+      case "Smartphone":
+        return <Smartphone className="w-5 h-5" />;
+      case "Cloud":
+        return <Cloud className="w-5 h-5" />;
+      case "Shield":
+        return <Shield className="w-5 h-5" />;
+      case "Cpu":
+        return <Cpu className="w-5 h-5" />;
+      case "Globe":
+        return <Globe className="w-5 h-5" />;
+      case "Terminal":
+        return <Terminal className="w-5 h-5" />;
+      case "Bot":
+        return <Bot className="w-5 h-5" />;
+      case "Layout":
       default:
         return <Layout className="w-5 h-5" />;
     }
@@ -31,7 +67,7 @@ export function ServicesList() {
         />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {servicesData.map((service, idx) => (
+          {services.map((service, idx) => (
             <FadeIn key={service.id} delay={idx * 0.1}>
               <div className="p-8 sm:p-10 rounded-3xl border border-border/80 bg-background/90 hover:border-foreground/30 transition-all duration-300 space-y-8 flex flex-col justify-between h-full shadow-sm">
                 <div className="space-y-4">

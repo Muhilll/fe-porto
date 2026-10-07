@@ -139,6 +139,7 @@ export interface BlogPostItem {
   category: string;
   tags: string[];
   featured?: boolean;
+  coverImage?: string;
 }
 
 export interface ContactInfo {

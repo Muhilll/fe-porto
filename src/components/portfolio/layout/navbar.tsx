@@ -6,10 +6,13 @@ import { useState, useEffect } from "react";
 import { Menu, X, ArrowUpRight, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { navigationItems } from "@/data/navigation";
-import { profileData } from "@/data/profile";
+import { useProfile } from "@/features/portfolio/profile/hooks/use-profile";
+import { getNormalizedProfile } from "@/features/portfolio/adapters";
 import { ThemeToggle } from "@/components/portfolio/shared/theme-toggle";
 
 export function PortfolioNavbar() {
+  const { data: apiProfile } = useProfile();
+  const profile = getNormalizedProfile(apiProfile);
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -56,12 +59,12 @@ export function PortfolioNavbar() {
               onClick={() => setMobileMenuOpen(false)}
               className="flex items-center gap-2.5 group focus:outline-none focus-visible:ring-2 focus-visible:ring-foreground rounded-lg"
             >
-              <div className="w-8 h-8 rounded-lg bg-foreground text-background flex items-center justify-center font-mono font-bold text-sm tracking-tight transition-transform group-hover:scale-105">
-                Z
+              <div className="w-8 h-8 rounded-lg bg-foreground text-background flex items-center justify-center font-mono font-bold text-sm tracking-tight transition-transform group-hover:scale-105 uppercase">
+                {profile.shortName?.charAt(0) || "Z"}
               </div>
               <div className="flex flex-col">
                 <span className="font-semibold text-sm sm:text-base tracking-tight text-foreground leading-none">
-                  {profileData.shortName}
+                  {profile.shortName}
                 </span>
                 <span className="text-[11px] font-mono text-muted-foreground leading-tight mt-0.5">
                   portfolio

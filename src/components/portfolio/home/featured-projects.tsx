@@ -4,12 +4,17 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { GithubIcon } from "@/components/portfolio/shared/icons";
-import { projectsData } from "@/data/projects";
+import { useProjects } from "@/features/portfolio/project/hooks/use-project";
+import { getNormalizedProjects } from "@/features/portfolio/adapters";
 import { SectionHeader } from "@/components/portfolio/shared/section-header";
 import { FadeIn } from "@/components/portfolio/shared/motion-wrapper";
 
 export function FeaturedProjects() {
-  const featured = projectsData.filter((p) => p.featured).slice(0, 3);
+  const { data: apiProjects } = useProjects();
+  const allProjects = getNormalizedProjects(apiProjects);
+
+  const featured = allProjects.filter((p) => p.featured);
+  const displayProjects = (featured.length > 0 ? featured : allProjects).slice(0, 3);
 
   return (
     <section id="projects" className="py-20 border-b border-border/40">
@@ -24,14 +29,14 @@ export function FeaturedProjects() {
             href="/projects"
             className="inline-flex items-center gap-2 text-sm font-semibold text-foreground hover:opacity-80 transition-opacity self-start sm:self-end group"
           >
-            <span>View All Projects ({projectsData.length})</span>
+            <span>View All Projects ({allProjects.length})</span>
             <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
           </Link>
         </div>
 
         {/* Projects Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {featured.map((project, idx) => (
+          {displayProjects.map((project, idx) => (
             <FadeIn key={project.id} delay={idx * 0.1} className="h-full">
               <div className="group flex flex-col h-full rounded-2xl border border-border/80 bg-background/80 hover:border-foreground/40 transition-all duration-300 overflow-hidden shadow-sm hover:shadow-md">
                 {/* Image Media Preview */}
@@ -40,6 +45,7 @@ export function FeaturedProjects() {
                     src={project.image}
                     alt={project.title}
                     fill
+                    unoptimized
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                   <div className="absolute top-3 left-3">

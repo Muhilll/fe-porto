@@ -2,19 +2,23 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Award, Eye, ExternalLink } from "lucide-react";
-import { certificatesData } from "@/data/certificates";
+import { Award, Eye, ExternalLink, Loader2 } from "lucide-react";
 import { CertificateItem } from "@/types/portfolio";
 import { CertificateModal } from "@/components/portfolio/certificates/certificate-modal";
 import { FadeIn } from "@/components/portfolio/shared/motion-wrapper";
+import { useCertificates } from "@/features/portfolio/certificate/hooks/use-certificate";
+import { getNormalizedCertificates } from "@/features/portfolio/adapters";
 
 export function CertificatesGrid() {
   const [selectedCert, setSelectedCert] = useState<CertificateItem | null>(null);
+  const { data: apiCerts, isLoading } = useCertificates();
+
+  const certificates = getNormalizedCertificates(apiCerts);
 
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {certificatesData.map((cert, idx) => (
+        {certificates.map((cert, idx) => (
           <FadeIn key={cert.id} delay={idx * 0.08} className="h-full">
             <div className="group flex flex-col justify-between h-full rounded-3xl border border-border/80 bg-background/90 overflow-hidden hover:border-foreground/40 transition-all duration-300 shadow-sm hover:shadow-md">
               <div>
@@ -24,6 +28,7 @@ export function CertificatesGrid() {
                     src={cert.image}
                     alt={cert.title}
                     fill
+                    unoptimized
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                   <div className="absolute top-3 left-3">

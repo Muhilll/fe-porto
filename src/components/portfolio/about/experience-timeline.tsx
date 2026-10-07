@@ -1,11 +1,18 @@
 "use client";
 
-import { experienceData, educationData } from "@/data/about";
+import { useExperiences, useEducations } from "@/features/portfolio/about/hooks/use-about";
+import { getNormalizedExperiences, getNormalizedEducations } from "@/features/portfolio/adapters";
 import { SectionHeader } from "@/components/portfolio/shared/section-header";
 import { FadeIn } from "@/components/portfolio/shared/motion-wrapper";
 import { Briefcase, GraduationCap } from "lucide-react";
 
 export function ExperienceTimeline() {
+  const { data: apiExperiences } = useExperiences();
+  const { data: apiEducations } = useEducations();
+
+  const experiences = getNormalizedExperiences(apiExperiences);
+  const educations = getNormalizedEducations(apiEducations);
+
   return (
     <section id="experience" className="py-20 border-b border-border/40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
@@ -24,7 +31,7 @@ export function ExperienceTimeline() {
             </div>
 
             <div className="space-y-8 relative pl-6 border-l border-border/80">
-              {experienceData.map((exp, idx) => (
+              {experiences.map((exp, idx) => (
                 <FadeIn key={exp.id} delay={idx * 0.1} className="relative group">
                   {/* Timeline dot */}
                   <div className="absolute -left-[31px] top-1.5 w-3 h-3 rounded-full border-2 border-background bg-foreground group-hover:scale-125 transition-transform" />
@@ -34,7 +41,9 @@ export function ExperienceTimeline() {
                       <span className="text-xs font-mono font-medium px-2.5 py-1 rounded-full bg-muted text-muted-foreground border border-border/60">
                         {exp.period}
                       </span>
-                      <span className="text-xs text-muted-foreground">{exp.location}</span>
+                      {exp.location && (
+                        <span className="text-xs text-muted-foreground">{exp.location}</span>
+                      )}
                     </div>
 
                     <div>
@@ -46,16 +55,18 @@ export function ExperienceTimeline() {
                       {exp.description}
                     </p>
 
-                    <div className="flex flex-wrap gap-1.5 pt-2">
-                      {exp.skills.map((skill) => (
-                        <span
-                          key={skill}
-                          className="px-2 py-0.5 rounded text-[11px] font-mono bg-muted/60 text-muted-foreground"
-                        >
-                          {skill}
-                        </span>
-                      ))}
-                    </div>
+                    {exp.skills && exp.skills.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 pt-2">
+                        {exp.skills.map((skill) => (
+                          <span
+                            key={skill}
+                            className="px-2 py-0.5 rounded text-[11px] font-mono bg-muted/60 text-muted-foreground"
+                          >
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </FadeIn>
               ))}
@@ -70,7 +81,7 @@ export function ExperienceTimeline() {
             </div>
 
             <div className="space-y-8 relative pl-6 border-l border-border/80">
-              {educationData.map((edu, idx) => (
+              {educations.map((edu, idx) => (
                 <FadeIn key={edu.id} delay={idx * 0.1} className="relative group">
                   {/* Timeline dot */}
                   <div className="absolute -left-[31px] top-1.5 w-3 h-3 rounded-full border-2 border-background bg-foreground group-hover:scale-125 transition-transform" />

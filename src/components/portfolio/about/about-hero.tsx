@@ -2,10 +2,17 @@
 
 import Image from "next/image";
 import { MapPin, Briefcase, CheckCircle2, FileText, ArrowUpRight } from "lucide-react";
-import { profileData } from "@/data/profile";
+import { useProfile } from "@/features/portfolio/profile/hooks/use-profile";
+import { getNormalizedProfile } from "@/features/portfolio/adapters";
 import { FadeIn } from "@/components/portfolio/shared/motion-wrapper";
 
 export function AboutHero() {
+  const { data: apiProfile } = useProfile();
+  const profile = getNormalizedProfile(apiProfile);
+
+  const isAvailable = profile.availability === "available";
+  const isBusy = profile.availability === "busy";
+
   return (
     <section id="about-hero" className="py-12 sm:py-20 border-b border-border/40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -16,13 +23,14 @@ export function AboutHero() {
               <div className="relative group">
                 {/* Architectural border offset */}
                 <div className="absolute -inset-3 rounded-3xl border border-border/80 bg-muted/30 -z-10 transition-transform duration-300 group-hover:translate-x-1 group-hover:translate-y-1" />
-                
+
                 {/* Photo container */}
                 <div className="relative w-64 sm:w-80 aspect-square rounded-2xl overflow-hidden border border-border/80 bg-muted shadow-md">
                   <Image
-                    src={profileData.avatarUrl}
-                    alt={profileData.name}
+                    src={profile.avatarUrl}
+                    alt={profile.name}
                     fill
+                    unoptimized
                     className="object-cover transition-transform duration-500 group-hover:scale-105 grayscale hover:grayscale-0"
                     priority
                   />
@@ -30,8 +38,12 @@ export function AboutHero() {
 
                 {/* Status Float Badge */}
                 <div className="absolute -bottom-4 right-4 px-3.5 py-1.5 rounded-full text-xs font-mono font-medium border border-border/80 bg-background/95 backdrop-blur-md text-foreground flex items-center gap-2 shadow-sm">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                  <span>Available to Hire</span>
+                  <span
+                    className={`w-2 h-2 rounded-full animate-pulse ${
+                      isBusy ? "bg-red-500" : isAvailable ? "bg-emerald-500" : "bg-amber-500"
+                    }`}
+                  />
+                  <span>{profile.availabilityText || (isAvailable ? "Available to Hire" : "Open for Discussion")}</span>
                 </div>
               </div>
             </FadeIn>
@@ -46,23 +58,25 @@ export function AboutHero() {
               </div>
 
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight text-foreground leading-tight">
-                Software Engineer with an eye for architecture and clean code.
+                {profile.role || "Software Engineer with an eye for architecture and clean code."}
               </h1>
 
               <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
-                {profileData.bio}
+                {profile.bio || profile.tagline}
               </p>
 
               {/* Quick Info Chips */}
               <div className="flex flex-wrap gap-2.5 pt-2">
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-mono border border-border/80 bg-background text-foreground">
-                  <MapPin className="w-3.5 h-3.5 text-muted-foreground" />
-                  <span>{profileData.location}</span>
-                </div>
+                {profile.location && (
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-mono border border-border/80 bg-background text-foreground">
+                    <MapPin className="w-3.5 h-3.5 text-muted-foreground" />
+                    <span>{profile.location}</span>
+                  </div>
+                )}
 
                 <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-mono border border-border/80 bg-background text-foreground">
                   <Briefcase className="w-3.5 h-3.5 text-muted-foreground" />
-                  <span>{profileData.experienceYears}+ Years Engineering</span>
+                  <span>{profile.experienceYears || 4}+ Years Engineering</span>
                 </div>
 
                 <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-mono border border-border/80 bg-background text-foreground">
@@ -73,23 +87,27 @@ export function AboutHero() {
 
               {/* Action */}
               <div className="pt-4 flex flex-wrap items-center gap-3">
-                <a
-                  href={profileData.resumeUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-semibold bg-foreground text-background hover:opacity-90 transition-opacity"
-                >
-                  <FileText className="w-3.5 h-3.5" />
-                  <span>Download Curriculum Vitae</span>
-                </a>
+                {profile.resumeUrl && profile.resumeUrl !== "#" && (
+                  <a
+                    href={profile.resumeUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-semibold bg-foreground text-background hover:opacity-90 transition-opacity"
+                  >
+                    <FileText className="w-3.5 h-3.5" />
+                    <span>Download Curriculum Vitae</span>
+                  </a>
+                )}
 
-                <a
-                  href={`mailto:${profileData.email}`}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-semibold border border-border/80 bg-background hover:bg-muted text-foreground transition-colors"
-                >
-                  <span>Inquire via Email</span>
-                  <ArrowUpRight className="w-3.5 h-3.5" />
-                </a>
+                {profile.email && (
+                  <a
+                    href={`mailto:${profile.email}`}
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-semibold border border-border/80 bg-background hover:bg-muted text-foreground transition-colors"
+                  >
+                    <span>Inquire via Email</span>
+                    <ArrowUpRight className="w-3.5 h-3.5" />
+                  </a>
+                )}
               </div>
             </FadeIn>
           </div>

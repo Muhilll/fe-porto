@@ -83,12 +83,12 @@ export function ContributionCalendar({
             {weeks.map((week, wIdx) => (
               <div key={wIdx} className="flex flex-col gap-[3px]">
                 {week.map((day) => {
-                  // Monochrome shades adapting to dark & light mode
-                  let levelClass = "bg-muted/40 hover:ring-1 hover:ring-foreground/40";
-                  if (day.level === 1) levelClass = "bg-neutral-300 dark:bg-neutral-700 hover:ring-1 hover:ring-foreground";
-                  if (day.level === 2) levelClass = "bg-neutral-500 dark:bg-neutral-500 hover:ring-1 hover:ring-foreground";
-                  if (day.level === 3) levelClass = "bg-neutral-700 dark:bg-neutral-300 hover:ring-1 hover:ring-foreground";
-                  if (day.level === 4) levelClass = "bg-neutral-900 dark:bg-neutral-100 hover:ring-1 hover:ring-foreground";
+                  // GitHub authentic Emerald green shades adapting to dark & light mode
+                  let levelClass = "bg-muted/40 dark:bg-muted/30 hover:ring-1 hover:ring-foreground/40";
+                  if (day.level === 1) levelClass = "bg-emerald-200 dark:bg-emerald-950 hover:ring-1 hover:ring-emerald-400 border border-emerald-300/30 dark:border-emerald-800/50";
+                  if (day.level === 2) levelClass = "bg-emerald-400 dark:bg-emerald-700 hover:ring-1 hover:ring-emerald-300";
+                  if (day.level === 3) levelClass = "bg-emerald-500 dark:bg-emerald-500 hover:ring-1 hover:ring-emerald-200";
+                  if (day.level === 4) levelClass = "bg-emerald-600 dark:bg-emerald-400 hover:ring-1 hover:ring-emerald-100 shadow-[0_0_6px_rgba(16,185,129,0.35)]";
 
                   return (
                     <div
@@ -121,11 +121,11 @@ export function ContributionCalendar({
           <div className="flex items-center gap-2">
             <span>Less</span>
             <div className="flex items-center gap-1">
-              <span className="w-[10px] h-[10px] rounded-[2px] bg-muted/40" />
-              <span className="w-[10px] h-[10px] rounded-[2px] bg-neutral-300 dark:bg-neutral-700" />
-              <span className="w-[10px] h-[10px] rounded-[2px] bg-neutral-500 dark:bg-neutral-500" />
-              <span className="w-[10px] h-[10px] rounded-[2px] bg-neutral-700 dark:bg-neutral-300" />
-              <span className="w-[10px] h-[10px] rounded-[2px] bg-neutral-900 dark:bg-neutral-100" />
+              <span className="w-[10px] h-[10px] rounded-[2px] bg-muted/40 dark:bg-muted/30" />
+              <span className="w-[10px] h-[10px] rounded-[2px] bg-emerald-200 dark:bg-emerald-950 border border-emerald-300/30 dark:border-emerald-800/50" />
+              <span className="w-[10px] h-[10px] rounded-[2px] bg-emerald-400 dark:bg-emerald-700" />
+              <span className="w-[10px] h-[10px] rounded-[2px] bg-emerald-500 dark:bg-emerald-500" />
+              <span className="w-[10px] h-[10px] rounded-[2px] bg-emerald-600 dark:bg-emerald-400 shadow-[0_0_4px_rgba(16,185,129,0.35)]" />
             </div>
             <span>More</span>
           </div>

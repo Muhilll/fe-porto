@@ -3,10 +3,18 @@
 import { Mail, MessageSquare, MapPin, Clock, ArrowUpRight } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "@/components/portfolio/shared/icons";
 import { contactData } from "@/data/contact";
-import { profileData } from "@/data/profile";
 import { FadeIn } from "@/components/portfolio/shared/motion-wrapper";
+import { useProfile } from "@/features/portfolio/profile/hooks/use-profile";
+import { getNormalizedProfile } from "@/features/portfolio/adapters";
 
 export function ContactPanel() {
+  const { data: apiProfile } = useProfile();
+  const profile = getNormalizedProfile(apiProfile);
+
+  const whatsappHref = profile.whatsapp.startsWith("http")
+    ? profile.whatsapp
+    : `https://wa.me/${profile.whatsapp.replace(/[^0-9]/g, "")}`;
+
   return (
     <FadeIn delay={0.1}>
       <div className="p-8 sm:p-10 rounded-3xl border border-border/80 bg-background/90 space-y-8 shadow-sm h-full flex flex-col justify-between">
@@ -26,7 +34,7 @@ export function ContactPanel() {
           {/* Channels List */}
           <div className="space-y-3">
             <a
-              href={`mailto:${contactData.email}`}
+              href={`mailto:${profile.email}`}
               className="flex items-center gap-4 p-4 rounded-2xl border border-border/60 bg-muted/30 hover:bg-muted/70 transition-colors group"
             >
               <div className="w-10 h-10 rounded-xl bg-foreground text-background flex items-center justify-center shrink-0">
@@ -35,14 +43,14 @@ export function ContactPanel() {
               <div className="min-w-0 flex-1">
                 <div className="text-[11px] font-mono text-muted-foreground">Email Address</div>
                 <div className="text-sm font-semibold text-foreground truncate group-hover:underline">
-                  {contactData.email}
+                  {profile.email}
                 </div>
               </div>
               <ArrowUpRight className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors shrink-0" />
             </a>
 
             <a
-              href={contactData.whatsapp}
+              href={whatsappHref}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-4 p-4 rounded-2xl border border-border/60 bg-muted/30 hover:bg-muted/70 transition-colors group"
@@ -53,7 +61,7 @@ export function ContactPanel() {
               <div className="min-w-0 flex-1">
                 <div className="text-[11px] font-mono text-muted-foreground">WhatsApp Instant</div>
                 <div className="text-sm font-semibold text-foreground truncate group-hover:underline">
-                  {contactData.whatsapp}
+                  {profile.whatsapp}
                 </div>
               </div>
               <ArrowUpRight className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors shrink-0" />
@@ -64,11 +72,11 @@ export function ContactPanel() {
           <div className="space-y-2.5 pt-4 border-t border-border/60 text-xs">
             <div className="flex items-center gap-2.5 text-muted-foreground">
               <MapPin className="w-4 h-4 text-foreground shrink-0" />
-              <span>{contactData.location}</span>
+              <span>{profile.location || contactData.location}</span>
             </div>
             <div className="flex items-center gap-2.5 text-muted-foreground">
               <Clock className="w-4 h-4 text-foreground shrink-0" />
-              <span>{contactData.workingHours}</span>
+              <span>{profile.availabilityText || contactData.workingHours}</span>
             </div>
           </div>
         </div>
@@ -82,7 +90,7 @@ export function ContactPanel() {
 
           <div className="flex items-center gap-2">
             <a
-              href={profileData.github}
+              href={profile.github}
               target="_blank"
               rel="noopener noreferrer"
               className="flex-1 inline-flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl border border-border/80 bg-background hover:bg-muted text-xs font-semibold text-foreground transition-colors"
@@ -91,7 +99,7 @@ export function ContactPanel() {
               <span>GitHub</span>
             </a>
             <a
-              href={profileData.linkedin}
+              href={profile.linkedin}
               target="_blank"
               rel="noopener noreferrer"
               className="flex-1 inline-flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl border border-border/80 bg-background hover:bg-muted text-xs font-semibold text-foreground transition-colors"

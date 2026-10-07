@@ -6,7 +6,7 @@ import { VerticalScrollIndicator } from "@/components/portfolio/shared/vertical-
 import { profileData } from "@/data/profile";
 
 export const metadata: Metadata = {
-  title: `${profileData.name} — ${profileData.role}`,
+  title: `Muhammad Ilham — Software Engineer`,
   description: profileData.tagline,
 };
 

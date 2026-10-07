@@ -57,7 +57,7 @@ export function HeroSection() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: "easeOut" }}
-            className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full text-xs font-mono border border-border/80 bg-muted/40 text-muted-foreground backdrop-blur-sm"
+            className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full text-xs font-mono border border-border/80 bg-background/80 text-foreground backdrop-blur-md shadow-sm"
           >
             <span className="relative flex h-2 w-2">
               <span
@@ -66,7 +66,7 @@ export function HeroSection() {
                 }`}
               />
               <span
-                className={`relative inline-flex rounded-full h-2 w-2 ${
+                className={`relative inline-flex rounded-full h-2 w-2 shadow-[0_0_8px_rgba(16,185,129,0.5)] ${
                   isBusy ? "bg-red-500" : isAvailable ? "bg-emerald-500" : "bg-amber-500"
                 }`}
               />
@@ -117,7 +117,7 @@ export function HeroSection() {
 
             <Link
               href="/contact"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold border border-border/80 bg-background hover:bg-muted text-foreground transition-all focus:outline-none focus:ring-2 focus:ring-foreground/20"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold border border-border/80 bg-background/80 hover:bg-muted text-foreground transition-all shadow-sm focus:outline-none focus:ring-2 focus:ring-foreground/20"
             >
               <span>Get in Touch</span>
               <ArrowUpRight className="w-4 h-4" />
@@ -190,7 +190,7 @@ export function HeroSection() {
               {profile.stats.map((stat, idx) => (
                 <div
                   key={idx}
-                  className="p-4 rounded-2xl border border-border/80 bg-background/60 backdrop-blur-sm space-y-1"
+                  className="p-4 rounded-2xl border border-border/80 bg-background/60 backdrop-blur-md shadow-sm space-y-1 hover:border-foreground/30 hover:-translate-y-0.5 transition-all"
                 >
                   <div className="text-2xl sm:text-3xl font-bold font-mono tracking-tight text-foreground">
                     {stat.value}

@@ -19,6 +19,7 @@ import {
   ModalFooter,
   ModalClose,
 } from "@/components/ui/modal";
+import { ProjectRichEditor } from "@/components/portfolio/shared/project-rich-editor";
 import {
   Plus,
   Search,
@@ -573,7 +574,7 @@ export default function PortfolioProjectsPage() {
       )}
 
       {/* CREATE & EDIT MODAL */}
-      <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)} className="max-w-2xl max-h-[90vh]">
+      <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)} className="max-w-4xl max-h-[92vh]">
         <ModalHeader>
           <ModalTitle>{editingProject ? "Sunting Proyek" : "Tambah Proyek Baru"}</ModalTitle>
           <ModalClose onClose={() => setIsModalOpen(false)} />
@@ -704,13 +705,19 @@ export default function PortfolioProjectsPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-foreground mb-1">Deskripsi Lengkap (Detail Modal)</label>
-              <textarea
-                rows={3}
-                value={formData.full_description}
-                onChange={(e) => setFormData((prev) => ({ ...prev, full_description: e.target.value }))}
-                placeholder="Penjelasan arsitektur, tantangan teknis, dan solusi yang diimplementasikan..."
-                className="w-full rounded-lg border border-input bg-background px-3 py-2 text-xs text-foreground focus:border-blue-600 focus:outline-none"
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="block text-xs font-medium text-foreground">
+                  Deskripsi Lengkap & Studi Kasus (Tiptap Rich-Text Editor)
+                </label>
+                <span className="text-[11px] text-muted-foreground font-mono">
+                  Mendukung formatting, screenshot, list fitur & arsitektur
+                </span>
+              </div>
+              <ProjectRichEditor
+                content={formData.full_description || ""}
+                onChange={(html) => setFormData((prev) => ({ ...prev, full_description: html }))}
+                placeholder="Tulis penjelasan arsitektur, tantangan teknis, fitur, dan sisipkan screenshot..."
+                minHeight="260px"
               />
             </div>
 

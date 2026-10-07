@@ -40,7 +40,10 @@ export function FeaturedProjects() {
             <FadeIn key={project.id} delay={idx * 0.1} className="h-full">
               <div className="group flex flex-col h-full rounded-2xl border border-border/80 bg-background/80 hover:border-foreground/40 transition-all duration-300 overflow-hidden shadow-sm hover:shadow-md">
                 {/* Image Media Preview */}
-                <div className="relative aspect-[16/10] overflow-hidden bg-muted">
+                <Link
+                  href={`/projects/${project.slug}`}
+                  className="relative aspect-[16/10] overflow-hidden bg-muted block"
+                >
                   <Image
                     src={project.image}
                     alt={project.title}
@@ -53,15 +56,17 @@ export function FeaturedProjects() {
                       {project.category}
                     </span>
                   </div>
-                </div>
+                </Link>
 
                 {/* Content */}
                 <div className="p-6 flex flex-col flex-1 space-y-4">
                   <div className="space-y-1.5 flex-1">
                     <div className="text-xs font-mono text-muted-foreground">{project.year}</div>
-                    <h3 className="text-lg font-semibold text-foreground group-hover:underline underline-offset-4">
-                      {project.title}
-                    </h3>
+                    <Link href={`/projects/${project.slug}`} className="block">
+                      <h3 className="text-lg font-semibold text-foreground group-hover:underline underline-offset-4">
+                        {project.title}
+                      </h3>
+                    </Link>
                     <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">
                       {project.shortDescription}
                     </p>
@@ -85,36 +90,36 @@ export function FeaturedProjects() {
                   </div>
 
                   {/* Actions */}
-                  <div className="pt-4 border-t border-border/60 flex items-center justify-between">
+                  <div className="pt-4 border-t border-border/60 flex flex-wrap items-center justify-between gap-2.5">
                     <Link
-                      href={`/projects#${project.slug}`}
-                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-foreground hover:opacity-80"
+                      href={`/projects/${project.slug}`}
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-foreground hover:underline underline-offset-4 group/read"
                     >
                       <span>Read Case Study</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
+                      <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover/read:translate-x-0.5" />
                     </Link>
 
                     <div className="flex items-center gap-2">
-                      {project.githubUrl && (
-                        <a
-                          href={project.githubUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="p-1.5 rounded-lg border border-border/80 hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
-                          aria-label="View source code on GitHub"
-                        >
-                          <GithubIcon className="w-3.5 h-3.5" />
-                        </a>
-                      )}
                       {project.demoUrl && (
                         <a
                           href={project.demoUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="p-1.5 rounded-lg border border-border/80 hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
-                          aria-label="Visit live demo"
+                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold bg-foreground text-background hover:opacity-90 transition-opacity"
                         >
-                          <ArrowUpRight className="w-3.5 h-3.5" />
+                          <span>Live Demo</span>
+                          <ArrowUpRight className="w-3 h-3" />
+                        </a>
+                      )}
+                      {project.githubUrl && (
+                        <a
+                          href={project.githubUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold border border-border/80 bg-background hover:bg-muted text-foreground transition-colors"
+                        >
+                          <GithubIcon className="w-3.5 h-3.5" />
+                          <span>Source Code</span>
                         </a>
                       )}
                     </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { ContributionData } from "@/types/portfolio";
 import { CalendarDay } from "@/services/github";
 import { useGithubContributions } from "@/hooks/use-github-contributions";
@@ -13,6 +13,11 @@ interface ContributionCalendarProps {
   isLive?: boolean;
 }
 
+const MONTH_NAMES = [
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+];
+
 export function ContributionCalendar({
   data: propData,
   weeks: propWeeks,
@@ -24,6 +29,64 @@ export function ContributionCalendar({
   const data = propData || hookResult.data;
   const weeks = propWeeks && propWeeks.length > 0 ? propWeeks : hookResult.weeks;
   const isLive = propIsLive !== undefined ? propIsLive : hookResult.isLive;
+
+  // Compute month positions mapped to week index
+  const monthMap = useMemo(() => {
+    const map = new Map<number, string>();
+    if (!weeks || weeks.length === 0) return map;
+
+    const rawLabels: { name: string; weekIndex: number }[] = [];
+    let prevMonth = -1;
+
+    weeks.forEach((week, wIdx) => {
+      for (const day of week) {
+        if (!day.date) continue;
+        const parts = day.date.split("-");
+        if (parts.length >= 2) {
+          const monthNum = parseInt(parts[1], 10);
+          if (monthNum !== prevMonth) {
+            rawLabels.push({
+              name: MONTH_NAMES[monthNum - 1] || "",
+              weekIndex: wIdx,
+            });
+            prevMonth = monthNum;
+            break;
+          }
+        }
+      }
+    });
+
+    // Filter to ensure no overlapping text
+    const filtered: { name: string; weekIndex: number }[] = [];
+    for (let i = 0; i < rawLabels.length; i++) {
+      const current = rawLabels[i];
+      const next = rawLabels[i + 1];
+
+      // If next label is < 3 weeks away, skip current label to avoid crowding
+      if (next && next.weekIndex - current.weekIndex < 3) {
+        continue;
+      }
+
+      // If label is too close to grid end (< 2 weeks from right edge), skip
+      if (weeks.length - current.weekIndex < 2) {
+        continue;
+      }
+
+      // Ensure minimum 3 weeks distance from previously placed label
+      const lastPlaced = filtered[filtered.length - 1];
+      if (lastPlaced && current.weekIndex - lastPlaced.weekIndex < 3) {
+        continue;
+      }
+
+      filtered.push(current);
+    }
+
+    for (const item of filtered) {
+      map.set(item.weekIndex, item.name);
+    }
+
+    return map;
+  }, [weeks]);
 
   // Format date readable
   const formatReadableDate = (dateStr: string) => {
@@ -77,31 +140,50 @@ export function ContributionCalendar({
           </div>
         </div>
 
-        {/* Heatmap Grid (Scrollable on small mobile screens) */}
+        {/* Heatmap Grid (Scrollable on small mobile screens, full width on tablet/desktop) */}
         <div className="overflow-x-auto pb-2 -mx-2 px-2 scrollbar-none">
-          <div className="min-w-[720px] flex gap-[3px]">
-            {weeks.map((week, wIdx) => (
-              <div key={wIdx} className="flex flex-col gap-[3px]">
-                {week.map((day) => {
-                  // GitHub authentic Emerald green shades adapting to dark & light mode
-                  let levelClass = "bg-muted/40 dark:bg-muted/30 hover:ring-1 hover:ring-foreground/40";
-                  if (day.level === 1) levelClass = "bg-emerald-200 dark:bg-emerald-950 hover:ring-1 hover:ring-emerald-400 border border-emerald-300/30 dark:border-emerald-800/50";
-                  if (day.level === 2) levelClass = "bg-emerald-400 dark:bg-emerald-700 hover:ring-1 hover:ring-emerald-300";
-                  if (day.level === 3) levelClass = "bg-emerald-500 dark:bg-emerald-500 hover:ring-1 hover:ring-emerald-200";
-                  if (day.level === 4) levelClass = "bg-emerald-600 dark:bg-emerald-400 hover:ring-1 hover:ring-emerald-100 shadow-[0_0_6px_rgba(16,185,129,0.35)]";
+          <div className="min-w-[728px] w-full space-y-2.5">
+            {/* Month labels header */}
+            <div className="flex gap-[3px] w-full h-4 text-[10px] sm:text-xs font-mono text-muted-foreground select-none">
+              {weeks.map((_, wIdx) => {
+                const monthName = monthMap.get(wIdx);
+                return (
+                  <div key={wIdx} className="flex-1 relative">
+                    {monthName && (
+                      <span className="absolute left-0 top-0 leading-none whitespace-nowrap">
+                        {monthName}
+                      </span>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
 
-                  return (
-                    <div
-                      key={day.date}
-                      onMouseEnter={() => setHoveredDay({ date: day.date, count: day.count })}
-                      onMouseLeave={() => setHoveredDay(null)}
-                      className={`w-[11px] h-[11px] rounded-[2.5px] transition-colors cursor-pointer ${levelClass}`}
-                      title={`${day.count} contributions on ${day.date}`}
-                    />
-                  );
-                })}
-              </div>
-            ))}
+            {/* Weeks columns */}
+            <div className="flex gap-[3px] w-full">
+              {weeks.map((week, wIdx) => (
+                <div key={wIdx} className="flex-1 flex flex-col gap-[3px]">
+                  {week.map((day) => {
+                    // GitHub authentic Emerald green shades adapting to dark & light mode
+                    let levelClass = "bg-slate-200/80 dark:bg-white/[0.07] border border-slate-300/60 dark:border-white/[0.09] hover:ring-1 hover:ring-foreground/40";
+                    if (day.level === 1) levelClass = "bg-emerald-200 dark:bg-emerald-950 hover:ring-1 hover:ring-emerald-400 border border-emerald-300/30 dark:border-emerald-800/50";
+                    if (day.level === 2) levelClass = "bg-emerald-400 dark:bg-emerald-700 hover:ring-1 hover:ring-emerald-300 border border-emerald-400/30 dark:border-emerald-600/50";
+                    if (day.level === 3) levelClass = "bg-emerald-500 dark:bg-emerald-500 hover:ring-1 hover:ring-emerald-200 border border-emerald-500/30 dark:border-emerald-400/50";
+                    if (day.level === 4) levelClass = "bg-emerald-600 dark:bg-emerald-400 hover:ring-1 hover:ring-emerald-100 border border-emerald-600/30 dark:border-emerald-300/50 shadow-[0_0_6px_rgba(16,185,129,0.35)]";
+
+                    return (
+                      <div
+                        key={day.date}
+                        onMouseEnter={() => setHoveredDay({ date: day.date, count: day.count })}
+                        onMouseLeave={() => setHoveredDay(null)}
+                        className={`w-full aspect-square rounded-[2px] sm:rounded-[3px] transition-all cursor-pointer ${levelClass}`}
+                        title={`${day.count} contributions on ${day.date}`}
+                      />
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -121,7 +203,7 @@ export function ContributionCalendar({
           <div className="flex items-center gap-2">
             <span>Less</span>
             <div className="flex items-center gap-1">
-              <span className="w-[10px] h-[10px] rounded-[2px] bg-muted/40 dark:bg-muted/30" />
+              <span className="w-[10px] h-[10px] rounded-[2px] bg-slate-200/80 dark:bg-white/[0.07] border border-slate-300/60 dark:border-white/[0.09]" />
               <span className="w-[10px] h-[10px] rounded-[2px] bg-emerald-200 dark:bg-emerald-950 border border-emerald-300/30 dark:border-emerald-800/50" />
               <span className="w-[10px] h-[10px] rounded-[2px] bg-emerald-400 dark:bg-emerald-700" />
               <span className="w-[10px] h-[10px] rounded-[2px] bg-emerald-500 dark:bg-emerald-500" />

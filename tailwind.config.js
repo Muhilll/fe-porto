@@ -60,8 +60,10 @@ module.exports = {
         },
       },
       fontFamily: {
-        display: ["var(--font-cafe-display)", "serif"],
-        body: ["var(--font-cafe-body)", "sans-serif"],
+        sans: ["var(--font-geist-sans)", "ui-sans-serif", "system-ui", "sans-serif"],
+        mono: ["var(--font-geist-mono)", "ui-monospace", "monospace"],
+        display: ["var(--font-geist-sans)", "sans-serif"],
+        body: ["var(--font-geist-sans)", "sans-serif"],
       },
       borderRadius: {
         lg: "var(--radius)",

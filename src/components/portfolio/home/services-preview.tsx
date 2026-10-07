@@ -23,7 +23,7 @@ export function ServicesPreview() {
   };
 
   return (
-    <section className="py-20 border-b border-border/40 bg-muted/20">
+    <section id="services" className="py-20 border-b border-border/40 bg-muted/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
           <SectionHeader

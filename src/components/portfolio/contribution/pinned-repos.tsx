@@ -1,10 +1,19 @@
 "use client";
 
 import { Star, GitFork, ArrowUpRight, FolderGit2 } from "lucide-react";
-import { contributionData } from "@/data/contributions";
+import { ContributionData } from "@/types/portfolio";
+import { useGithubContributions } from "@/hooks/use-github-contributions";
 import { FadeIn } from "@/components/portfolio/shared/motion-wrapper";
 
-export function PinnedRepos() {
+interface PinnedReposProps {
+  data?: ContributionData;
+  isLive?: boolean;
+}
+
+export function PinnedRepos({ data: propData }: PinnedReposProps) {
+  const hookResult = useGithubContributions();
+  const data = propData || hookResult.data;
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -13,10 +22,10 @@ export function PinnedRepos() {
           <h3 className="text-base font-semibold text-foreground">Featured Open Source Repositories</h3>
         </div>
         <a
-          href={contributionData.githubUrl}
+          href={data.githubUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-foreground hover:opacity-80"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-foreground hover:opacity-80 transition-opacity"
         >
           <span>View all on GitHub</span>
           <ArrowUpRight className="w-3.5 h-3.5" />
@@ -24,7 +33,7 @@ export function PinnedRepos() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {contributionData.repositories.map((repo, idx) => (
+        {data.repositories.map((repo, idx) => (
           <FadeIn key={repo.name} delay={idx * 0.08}>
             <a
               href={repo.url}

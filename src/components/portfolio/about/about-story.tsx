@@ -6,7 +6,7 @@ import { FadeIn } from "@/components/portfolio/shared/motion-wrapper";
 
 export function AboutStory() {
   return (
-    <section className="py-20 border-b border-border/40">
+    <section id="story" className="py-20 border-b border-border/40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
         <div className="max-w-3xl space-y-6">
           <SectionHeader

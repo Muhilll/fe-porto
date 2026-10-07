@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { PortfolioNavbar } from "@/components/portfolio/layout/navbar";
 import { PortfolioFooter } from "@/components/portfolio/layout/footer";
 import { AmbientBackground } from "@/components/portfolio/shared/ambient-background";
+import { VerticalScrollIndicator } from "@/components/portfolio/shared/vertical-scroll-indicator";
 import { profileData } from "@/data/profile";
 
 export const metadata: Metadata = {
@@ -18,7 +19,10 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
       {/* 2. Fixed Navbar */}
       <PortfolioNavbar />
 
-      {/* 3. Main Content Layer */}
+      {/* 3. Custom Vertical Scroll Indicator (HUD Progress & Waypoints) */}
+      <VerticalScrollIndicator />
+
+      {/* 4. Main Content Layer */}
       <main className="flex-1 pt-16 relative z-10">
         {children}
       </main>

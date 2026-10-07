@@ -28,7 +28,7 @@ export default function RootLayout({ children }) {
         <Script
           src={process.env.NEXT_PUBLIC_MIDTRANS_SNAP_URL || "https://app.sandbox.midtrans.com/snap/snap.js"}
           data-client-key={process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY || ""}
-          strategy="beforeInteractive"
+          strategy="afterInteractive"
         />
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <NotificationProvider>

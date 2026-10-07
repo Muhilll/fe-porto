@@ -6,7 +6,7 @@ import { FadeIn } from "@/components/portfolio/shared/motion-wrapper";
 
 export function ProcessSection() {
   return (
-    <section className="py-20 border-b border-border/40 bg-muted/20">
+    <section id="process" className="py-20 border-b border-border/40 bg-muted/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
         <SectionHeader
           badge="Execution Model"

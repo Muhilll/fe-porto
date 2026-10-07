@@ -39,7 +39,7 @@ export function HeroSection() {
   }, [displayedText, isDeleting, roleIndex]);
 
   return (
-    <section className="relative overflow-hidden py-16 sm:py-24 md:py-32 border-b border-border/40">
+    <section id="hero" className="relative overflow-hidden py-16 sm:py-24 md:py-32 border-b border-border/40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl space-y-8">
           {/* Status Badge */}

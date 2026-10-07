@@ -1,8 +1,8 @@
 import { ContributionData } from "@/types/portfolio";
 
 export const contributionData: ContributionData = {
-  githubUsername: "zailyanzali",
-  githubUrl: "https://github.com",
+  githubUsername: process.env.NEXT_PUBLIC_GITHUB_USERNAME || "Muhilll",
+  githubUrl: `https://github.com/${process.env.NEXT_PUBLIC_GITHUB_USERNAME || "Muhilll"}`,
   totalContributionsLastYear: 1428,
   currentStreakDays: 34,
   longestStreakDays: 92,

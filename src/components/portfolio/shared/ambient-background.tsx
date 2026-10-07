@@ -15,7 +15,7 @@ export function AmbientBackground() {
   const smoothY = useSpring(mouseY, springConfig);
 
   const darkSpotlight = useMotionTemplate`radial-gradient(650px circle at ${smoothX}px ${smoothY}px, rgba(120, 119, 198, 0.12), transparent 80%)`;
-  const lightSpotlight = useMotionTemplate`radial-gradient(550px circle at ${smoothX}px ${smoothY}px, rgba(0, 0, 0, 0.04), transparent 80%)`;
+  const lightSpotlight = useMotionTemplate`radial-gradient(600px circle at ${smoothX}px ${smoothY}px, rgba(255, 255, 255, 0.75), transparent 75%)`;
 
   useEffect(() => {
     setMounted(true);
@@ -33,17 +33,17 @@ export function AmbientBackground() {
       aria-hidden="true"
       className="fixed inset-0 pointer-events-none z-0 overflow-hidden select-none"
     >
-      {/* 1. Top Radiant Ambient Glow (Inspired by modern dark mode spotlights) */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[550px] rounded-full bg-[radial-gradient(ellipse_at_center,rgba(99,102,241,0.18)_0%,rgba(147,130,255,0.1)_35%,transparent_70%)] dark:bg-[radial-gradient(ellipse_at_center,rgba(120,119,198,0.22)_0%,rgba(99,102,241,0.12)_40%,transparent_70%)] blur-[90px]" />
+      {/* 1. Top Radiant Ambient Glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[550px] rounded-full bg-[radial-gradient(ellipse_at_center,rgba(99,102,241,0.09)_0%,rgba(147,130,255,0.05)_40%,transparent_70%)] dark:bg-[radial-gradient(ellipse_at_center,rgba(120,119,198,0.22)_0%,rgba(99,102,241,0.12)_40%,transparent_70%)] blur-[90px]" />
 
-      {/* 2. Side Ambient Aura Fades (Direct from luluuu.vercel.app reference) */}
-      <div className="absolute left-0 top-0 bottom-0 w-[45%] bg-gradient-to-r from-muted/40 via-muted/15 to-transparent dark:from-indigo-950/25 dark:via-gray-900/40 dark:to-transparent" />
-      <div className="absolute right-0 top-0 bottom-0 w-[45%] bg-gradient-to-l from-muted/40 via-muted/15 to-transparent dark:from-indigo-950/25 dark:via-gray-900/40 dark:to-transparent" />
-      <div className="absolute inset-0 w-full max-w-5xl mx-auto bg-gradient-to-r from-transparent via-muted/10 to-transparent dark:via-indigo-950/15" />
+      {/* 2. Side Ambient Aura Fades */}
+      <div className="absolute left-0 top-0 bottom-0 w-[45%] bg-gradient-to-r from-muted/50 via-muted/20 to-transparent dark:from-indigo-950/25 dark:via-gray-900/40 dark:to-transparent" />
+      <div className="absolute right-0 top-0 bottom-0 w-[45%] bg-gradient-to-l from-muted/50 via-muted/20 to-transparent dark:from-indigo-950/25 dark:via-gray-900/40 dark:to-transparent" />
+      <div className="absolute inset-0 w-full max-w-5xl mx-auto bg-gradient-to-r from-transparent via-muted/15 to-transparent dark:via-indigo-950/15" />
 
       {/* 3. Left Wing Grid Overlay (100px x 100px with smooth directional mask) */}
       <div
-        className="absolute left-0 top-0 bottom-0 w-[45%] bg-[size:100px_100px] bg-[linear-gradient(to_right,rgba(140,150,170,0.15)_1px,transparent_1px),linear-gradient(to_bottom,rgba(140,150,170,0.15)_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,rgba(160,170,210,0.22)_1px,transparent_1px),linear-gradient(to_bottom,rgba(160,170,210,0.22)_1px,transparent_1px)]"
+        className="absolute left-0 top-0 bottom-0 w-[45%] bg-[size:100px_100px] bg-[linear-gradient(to_right,rgba(71,85,105,0.08)_1px,transparent_1px),linear-gradient(to_bottom,rgba(71,85,105,0.08)_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,rgba(160,170,210,0.22)_1px,transparent_1px),linear-gradient(to_bottom,rgba(160,170,210,0.22)_1px,transparent_1px)]"
         style={{
           maskImage: "linear-gradient(to right, black 50%, transparent 95%)",
           WebkitMaskImage: "linear-gradient(to right, black 50%, transparent 95%)",
@@ -52,7 +52,7 @@ export function AmbientBackground() {
 
       {/* 4. Right Wing Grid Overlay (100px x 100px with smooth directional mask) */}
       <div
-        className="absolute right-0 top-0 bottom-0 w-[45%] bg-[size:100px_100px] bg-[linear-gradient(to_right,rgba(140,150,170,0.15)_1px,transparent_1px),linear-gradient(to_bottom,rgba(140,150,170,0.15)_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,rgba(160,170,210,0.22)_1px,transparent_1px),linear-gradient(to_bottom,rgba(160,170,210,0.22)_1px,transparent_1px)]"
+        className="absolute right-0 top-0 bottom-0 w-[45%] bg-[size:100px_100px] bg-[linear-gradient(to_right,rgba(71,85,105,0.08)_1px,transparent_1px),linear-gradient(to_bottom,rgba(71,85,105,0.08)_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,rgba(160,170,210,0.22)_1px,transparent_1px),linear-gradient(to_bottom,rgba(160,170,210,0.22)_1px,transparent_1px)]"
         style={{
           maskImage: "linear-gradient(to left, black 50%, transparent 95%)",
           WebkitMaskImage: "linear-gradient(to left, black 50%, transparent 95%)",
@@ -61,7 +61,7 @@ export function AmbientBackground() {
 
       {/* 5. Center Subtle Continuous Grid Overlay (Ensures middle is not empty) */}
       <div
-        className="absolute inset-0 bg-[size:80px_80px] bg-[linear-gradient(to_right,rgba(120,130,150,0.08)_1px,transparent_1px),linear-gradient(to_bottom,rgba(120,130,150,0.08)_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,rgba(200,210,255,0.1)_1px,transparent_1px),linear-gradient(to_bottom,rgba(200,210,255,0.1)_1px,transparent_1px)]"
+        className="absolute inset-0 bg-[size:80px_80px] bg-[linear-gradient(to_right,rgba(71,85,105,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(71,85,105,0.05)_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,rgba(200,210,255,0.1)_1px,transparent_1px),linear-gradient(to_bottom,rgba(200,210,255,0.1)_1px,transparent_1px)]"
         style={{
           maskImage: "radial-gradient(ellipse 70% 60% at 50% 40%, black 20%, transparent 85%)",
           WebkitMaskImage: "radial-gradient(ellipse 70% 60% at 50% 40%, black 20%, transparent 85%)",
@@ -83,7 +83,7 @@ export function AmbientBackground() {
       )}
 
       {/* 7. Bottom Ambient Light Depth */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-[700px] h-[350px] rounded-full bg-[radial-gradient(circle,rgba(56,189,248,0.1)_0%,transparent_70%)] dark:bg-[radial-gradient(circle,rgba(99,102,241,0.12)_0%,transparent_70%)] blur-[90px]" />
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-[700px] h-[350px] rounded-full bg-[radial-gradient(circle,rgba(56,189,248,0.06)_0%,transparent_70%)] dark:bg-[radial-gradient(circle,rgba(99,102,241,0.12)_0%,transparent_70%)] blur-[90px]" />
     </div>
   );
 }

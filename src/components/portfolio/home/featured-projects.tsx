@@ -12,7 +12,7 @@ export function FeaturedProjects() {
   const featured = projectsData.filter((p) => p.featured).slice(0, 3);
 
   return (
-    <section className="py-20 border-b border-border/40">
+    <section id="projects" className="py-20 border-b border-border/40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
           <SectionHeader

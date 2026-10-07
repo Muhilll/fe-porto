@@ -7,7 +7,7 @@ import { FadeIn } from "@/components/portfolio/shared/motion-wrapper";
 
 export function AboutHero() {
   return (
-    <section className="py-12 sm:py-20 border-b border-border/40">
+    <section id="about-hero" className="py-12 sm:py-20 border-b border-border/40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           {/* Left: Avatar Frame (Crafted with modern monochrome framing) */}

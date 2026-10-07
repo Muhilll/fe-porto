@@ -41,15 +41,15 @@ export const profileData: Profile = {
   avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=80",
   resumeUrl: "#",
   email: "contact@zailyanzali.my.id",
-  github: "https://github.com",
+  github: "https://github.com/Muhilll",
   linkedin: "https://linkedin.com",
   whatsapp: "https://wa.me/6281234567890",
   socials: [
     {
       platform: "GitHub",
-      url: "https://github.com",
+      url: "https://github.com/Muhilll",
       icon: "Github",
-      label: "github.com",
+      label: "github.com/Muhilll",
     },
     {
       platform: "LinkedIn",

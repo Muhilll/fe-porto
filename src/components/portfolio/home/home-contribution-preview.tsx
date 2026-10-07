@@ -3,13 +3,20 @@
 import Link from "next/link";
 import { GitCommit, GitPullRequest, Star, ArrowRight } from "lucide-react";
 import { GithubIcon } from "@/components/portfolio/shared/icons";
-import { contributionData } from "@/data/contributions";
+import { useGithubContributions } from "@/hooks/use-github-contributions";
 import { SectionHeader } from "@/components/portfolio/shared/section-header";
 import { FadeIn } from "@/components/portfolio/shared/motion-wrapper";
 
 export function HomeContributionPreview() {
+  const { data } = useGithubContributions();
+  const featuredRepo = data.repositories[0] || {
+    name: "fe-starter-next",
+    description: "Next.js starter portfolio template.",
+    url: data.githubUrl,
+  };
+
   return (
-    <section className="py-20 border-b border-border/40">
+    <section id="contributions" className="py-20 border-b border-border/40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
           <SectionHeader
@@ -34,8 +41,11 @@ export function HomeContributionPreview() {
                 <span className="text-xs font-mono">Total Commits</span>
                 <GitCommit className="w-4 h-4 text-foreground" />
               </div>
-              <div className="text-3xl font-bold font-mono text-foreground">
-                {contributionData.totalContributionsLastYear}
+              <div
+                suppressHydrationWarning
+                className="text-3xl font-bold font-mono text-foreground"
+              >
+                {new Intl.NumberFormat("en-US").format(data.totalContributionsLastYear)}
               </div>
               <p className="text-xs text-muted-foreground">In the past 12 months</p>
             </div>
@@ -48,9 +58,9 @@ export function HomeContributionPreview() {
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               </div>
               <div className="text-3xl font-bold font-mono text-foreground">
-                {contributionData.currentStreakDays} Days
+                {data.currentStreakDays} Days
               </div>
-              <p className="text-xs text-muted-foreground">Longest streak: {contributionData.longestStreakDays} days</p>
+              <p className="text-xs text-muted-foreground">Longest streak: {data.longestStreakDays} days</p>
             </div>
           </FadeIn>
 
@@ -61,7 +71,7 @@ export function HomeContributionPreview() {
                 <GitPullRequest className="w-4 h-4 text-foreground" />
               </div>
               <div className="text-3xl font-bold font-mono text-foreground">
-                {contributionData.totalPullRequests}+
+                {data.totalPullRequests}+
               </div>
               <p className="text-xs text-muted-foreground">Reviewed & merged</p>
             </div>
@@ -74,7 +84,7 @@ export function HomeContributionPreview() {
                 <Star className="w-4 h-4 text-foreground" />
               </div>
               <div className="text-3xl font-bold font-mono text-foreground">
-                {contributionData.totalStarsEarned}
+                {data.totalStarsEarned}
               </div>
               <p className="text-xs text-muted-foreground">Community recognition</p>
             </div>
@@ -87,20 +97,20 @@ export function HomeContributionPreview() {
             <div className="flex items-center gap-2">
               <GithubIcon className="w-4 h-4 text-foreground" />
               <h4 className="font-semibold text-base text-foreground font-mono">
-                {contributionData.repositories[0].name}
+                {featuredRepo.name}
               </h4>
             </div>
             <p className="text-xs sm:text-sm text-muted-foreground">
-              {contributionData.repositories[0].description}
+              {featuredRepo.description}
             </p>
           </div>
           <a
-            href={contributionData.repositories[0].url}
+            href={featuredRepo.url}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold border border-border/80 bg-background hover:bg-muted text-foreground transition-colors shrink-0"
           >
-            <span>Star on GitHub</span>
+            <span>View on GitHub</span>
             <Star className="w-3.5 h-3.5" />
           </a>
         </div>

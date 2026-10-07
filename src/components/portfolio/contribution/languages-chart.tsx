@@ -1,10 +1,19 @@
 "use client";
 
-import { contributionData } from "@/data/contributions";
+import { ContributionData } from "@/types/portfolio";
+import { useGithubContributions } from "@/hooks/use-github-contributions";
 import { FadeIn } from "@/components/portfolio/shared/motion-wrapper";
 import { Code2 } from "lucide-react";
 
-export function LanguagesChart() {
+interface LanguagesChartProps {
+  data?: ContributionData;
+  isLive?: boolean;
+}
+
+export function LanguagesChart({ data: propData }: LanguagesChartProps) {
+  const hookResult = useGithubContributions();
+  const data = propData || hookResult.data;
+
   return (
     <FadeIn>
       <div className="p-6 sm:p-8 rounded-3xl border border-border/80 bg-background/90 space-y-6 shadow-sm">
@@ -13,14 +22,14 @@ export function LanguagesChart() {
           <div>
             <h3 className="text-base font-semibold text-foreground">Top Languages</h3>
             <p className="text-xs text-muted-foreground font-mono">
-              Calculated across authored repositories
+              Calculated across public repositories
             </p>
           </div>
         </div>
 
         {/* Multi-segment Progress Bar */}
         <div className="h-3 rounded-full overflow-hidden flex bg-muted gap-[2px]">
-          {contributionData.topLanguages.map((lang) => (
+          {data.topLanguages.map((lang) => (
             <div
               key={lang.name}
               style={{ width: `${lang.percentage}%`, backgroundColor: lang.color }}
@@ -32,7 +41,7 @@ export function LanguagesChart() {
 
         {/* Legend List */}
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
-          {contributionData.topLanguages.map((lang) => (
+          {data.topLanguages.map((lang) => (
             <div key={lang.name} className="flex items-center justify-between text-xs p-2 rounded-xl bg-muted/40">
               <span className="flex items-center gap-2 font-medium text-foreground">
                 <span

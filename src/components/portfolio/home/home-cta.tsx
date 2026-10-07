@@ -7,7 +7,7 @@ import { FadeIn } from "@/components/portfolio/shared/motion-wrapper";
 
 export function HomeCta() {
   return (
-    <section className="py-20 sm:py-28">
+    <section id="contact" className="py-20 sm:py-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <FadeIn>
           <div className="relative overflow-hidden rounded-3xl border border-border/80 bg-foreground text-background p-8 sm:p-14 md:p-16">

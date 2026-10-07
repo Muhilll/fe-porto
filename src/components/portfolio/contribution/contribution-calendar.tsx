@@ -1,19 +1,38 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { contributionData, generateMockCalendarWeeks } from "@/data/contributions";
+import { useState } from "react";
+import { ContributionData } from "@/types/portfolio";
+import { CalendarDay } from "@/services/github";
+import { useGithubContributions } from "@/hooks/use-github-contributions";
 import { FadeIn } from "@/components/portfolio/shared/motion-wrapper";
 import { Calendar, Info } from "lucide-react";
 
-export function ContributionCalendar() {
+interface ContributionCalendarProps {
+  data?: ContributionData;
+  weeks?: CalendarDay[][];
+  isLive?: boolean;
+}
+
+export function ContributionCalendar({
+  data: propData,
+  weeks: propWeeks,
+  isLive: propIsLive,
+}: ContributionCalendarProps) {
   const [hoveredDay, setHoveredDay] = useState<{ date: string; count: number } | null>(null);
 
-  const weeks = useMemo(() => generateMockCalendarWeeks(), []);
+  const hookResult = useGithubContributions();
+  const data = propData || hookResult.data;
+  const weeks = propWeeks && propWeeks.length > 0 ? propWeeks : hookResult.weeks;
+  const isLive = propIsLive !== undefined ? propIsLive : hookResult.isLive;
 
   // Format date readable
   const formatReadableDate = (dateStr: string) => {
-    const d = new Date(dateStr);
-    return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+    try {
+      const d = new Date(dateStr);
+      return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+    } catch {
+      return dateStr;
+    }
   };
 
   return (
@@ -23,11 +42,22 @@ export function ContributionCalendar() {
           <div className="flex items-center gap-2.5">
             <Calendar className="w-5 h-5 text-foreground" />
             <div>
-              <h3 className="text-base font-semibold text-foreground">
-                Commit Activity Grid (Past 12 Months)
-              </h3>
-              <p className="text-xs text-muted-foreground font-mono">
-                {contributionData.totalContributionsLastYear} total contributions in the last year
+              <div className="flex items-center gap-2">
+                <h3 className="text-base font-semibold text-foreground">
+                  Commit Activity Grid (Past 12 Months)
+                </h3>
+                {isLive && (
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    LIVE
+                  </span>
+                )}
+              </div>
+              <p
+                suppressHydrationWarning
+                className="text-xs text-muted-foreground font-mono mt-0.5"
+              >
+                {new Intl.NumberFormat("en-US").format(data.totalContributionsLastYear)} total contributions in the last year
               </p>
             </div>
           </div>
@@ -77,8 +107,16 @@ export function ContributionCalendar() {
 
         {/* Footer legend */}
         <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-border/60 text-xs text-muted-foreground font-mono">
-          <div>
+          <div className="flex items-center gap-2">
             <span>Data synced with GitHub</span>
+            <a
+              href={data.githubUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-foreground hover:underline font-semibold"
+            >
+              @{data.githubUsername}
+            </a>
           </div>
           <div className="flex items-center gap-2">
             <span>Less</span>

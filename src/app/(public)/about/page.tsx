@@ -6,7 +6,7 @@ import { SkillsGrid } from "@/components/portfolio/about/skills-grid";
 import { HomeCta } from "@/components/portfolio/home/home-cta";
 
 export const metadata: Metadata = {
-  title: "About — Zail Yan Zali",
+  title: "About — Muhammad Ilham",
   description: "Background, technical philosophy, professional timeline, and core engineering toolkit.",
 };
 

@@ -4,7 +4,7 @@ import { SectionHeader } from "@/components/portfolio/shared/section-header";
 import { HomeCta } from "@/components/portfolio/home/home-cta";
 
 export const metadata: Metadata = {
-  title: "Engineering Blog & Notes — Zail Yan Zali",
+  title: "Engineering Blog & Notes — Muhammad Ilham",
   description: "Technical writings, architectural breakdowns, database strategies, and software development insights.",
 };
 

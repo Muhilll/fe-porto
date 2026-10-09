@@ -347,7 +347,7 @@ export default function PortfolioProfilePage() {
                     value={formData.name}
                     onChange={handleInputChange}
                     required
-                    placeholder="Contoh: Zail Yan Zali"
+                    placeholder="Contoh: Muhammad Ilham"
                     className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600"
                   />
                 </div>
@@ -362,7 +362,7 @@ export default function PortfolioProfilePage() {
                     value={formData.short_name}
                     onChange={handleInputChange}
                     required
-                    placeholder="Contoh: Zail"
+                    placeholder="Contoh: Muhil"
                     className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600"
                   />
                 </div>
@@ -640,7 +640,7 @@ export default function PortfolioProfilePage() {
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      placeholder="contact@zailyanzali.my.id"
+                      placeholder="ilham.kece002@gmail.com"
                       className="w-full rounded-lg border border-input bg-background pl-9 pr-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600"
                     />
                   </div>
@@ -657,7 +657,7 @@ export default function PortfolioProfilePage() {
                       name="whatsapp"
                       value={formData.whatsapp}
                       onChange={handleInputChange}
-                      placeholder="+62 812-3456-7890"
+                      placeholder="https://wa.me/6281244795544"
                       className="w-full rounded-lg border border-input bg-background pl-9 pr-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600"
                     />
                   </div>

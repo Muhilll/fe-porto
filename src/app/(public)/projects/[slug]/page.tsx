@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
   // Try to find in fallback static projects first for SSR metadata
   const project = projectsData.find((p) => p.slug === slug || p.id === slug);
 
-  const title = project ? `${project.title} — Case Study` : "Project Detail — Zail Yan Zali";
+  const title = project ? `${project.title} — Case Study` : "Project Detail — Muhammad Ilham";
   const description =
     project?.shortDescription ||
     "Detailed engineering case study, software architecture, technical highlights, and system metrics.";

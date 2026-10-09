@@ -1,20 +1,19 @@
 import { Profile } from "@/types/portfolio";
 
 export const profileData: Profile = {
-  name: "Zail Yan Zali",
-  shortName: "Zail",
+  name: "Muhammad Ilham",
+  shortName: "Muhil",
   role: "Full-Stack Software Engineer",
   rolesList: [
     "Full-Stack Web Developer",
     "API & Systems Architect",
-    "Next.js & TypeScript Specialist",
-    "Open Source Contributor",
+    "Mobile Developer",
   ],
-  tagline: "Building scalable web products, resilient backend architectures, and high-performance digital interfaces.",
-  bio: "Software engineer specializing in modern TypeScript ecosystems, distributed backend systems, and responsive user interfaces. Focused on code cleanliness, rigorous type safety, and minimal, high-impact user experiences.",
+  tagline: "Engineering scalable full-stack applications with elegant architecture.",
+  bio: "Highly adaptable Programmer and Software Developer specializing in Full-Stack Web and Mobile Development, with a strong foundation in building scalable applications using Laravel, Next.js, Kotlin, and TypeScript. Equipped with hands-on experience in database management, system optimization, and leadership through academic laboratory assistant roles. Adept at transforming complex operational workflows into intuitive, high-performance software solutions.",
   location: "Indonesia (UTC+7) · Remote Worldwide",
   availability: "available",
-  availabilityText: "Available for full-time roles & engineering projects",
+  availabilityText: "Available for full-time roles & engineering proj",
   experienceYears: 4,
   stats: [
     {
@@ -40,10 +39,10 @@ export const profileData: Profile = {
   ],
   avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=80",
   resumeUrl: "#",
-  email: "contact@zailyanzali.my.id",
+  email: "ilham.kece002@gmail.com",
   github: "https://github.com/Muhilll",
   linkedin: "https://linkedin.com",
-  whatsapp: "https://wa.me/6281234567890",
+  whatsapp: "https://wa.me/6281244795544",
   socials: [
     {
       platform: "GitHub",
@@ -55,19 +54,19 @@ export const profileData: Profile = {
       platform: "LinkedIn",
       url: "https://linkedin.com",
       icon: "Linkedin",
-      label: "linkedin.com/in",
+      label: "linkedin.com",
     },
     {
       platform: "Email",
-      url: "mailto:contact@zailyanzali.my.id",
+      url: "mailto:ilham.kece002@gmail.com",
       icon: "Mail",
-      label: "contact@zailyanzali.my.id",
+      label: "ilham.kece002@gmail.com",
     },
     {
       platform: "WhatsApp",
-      url: "https://wa.me/6281234567890",
+      url: "https://wa.me/6281244795544",
       icon: "MessageSquare",
-      label: "+62 812-3456-7890",
+      label: "+62 812-4479-5544",
     },
   ],
 };

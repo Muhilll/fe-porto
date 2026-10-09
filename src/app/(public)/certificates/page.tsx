@@ -4,7 +4,7 @@ import { SectionHeader } from "@/components/portfolio/shared/section-header";
 import { HomeCta } from "@/components/portfolio/home/home-cta";
 
 export const metadata: Metadata = {
-  title: "Certificates & Licenses — Zail Yan Zali",
+  title: "Certificates & Licenses — Muhammad Ilham",
   description: "Verified professional certifications, cloud licenses, and engineering qualifications.",
 };
 

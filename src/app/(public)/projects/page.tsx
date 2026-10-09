@@ -3,7 +3,7 @@ import { ProjectsShowcase } from "@/components/portfolio/projects/projects-showc
 import { HomeCta } from "@/components/portfolio/home/home-cta";
 
 export const metadata: Metadata = {
-  title: "Projects — Zail Yan Zali",
+  title: "Projects — Muhammad Ilham",
   description: "Explore selected software engineering projects, web applications, and technical architectures.",
 };
 

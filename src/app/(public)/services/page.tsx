@@ -4,7 +4,7 @@ import { ProcessSection } from "@/components/portfolio/services/process-section"
 import { HomeCta } from "@/components/portfolio/home/home-cta";
 
 export const metadata: Metadata = {
-  title: "Services — Zail Yan Zali",
+  title: "Services — Muhammad Ilham",
   description: "Full-stack web application development, edge APIs, systems architecture, and UI/UX engineering.",
 };
 

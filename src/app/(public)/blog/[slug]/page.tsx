@@ -40,13 +40,13 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
   const { slug } = await params;
   const post = await getPost(slug);
-  if (!post) return { title: "Blog Post Not Found — Zail Yan Zali" };
+  if (!post) return { title: "Blog Post Not Found — Muhammad Ilham" };
 
   return {
-    title: `${post.title} — Zail Yan Zali`,
+    title: `${post.title} — Muhammad Ilham`,
     description: post.excerpt,
     openGraph: {
-      title: `${post.title} — Zail Yan Zali`,
+      title: `${post.title} — Muhammad Ilham`,
       description: post.excerpt,
       images: post.coverImage ? [{ url: post.coverImage }] : undefined,
     },

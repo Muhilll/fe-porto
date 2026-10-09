@@ -4,7 +4,7 @@ import { ContactForm } from "@/components/portfolio/contact/contact-form";
 import { SectionHeader } from "@/components/portfolio/shared/section-header";
 
 export const metadata: Metadata = {
-  title: "Contact & Consultations — Zail Yan Zali",
+  title: "Contact & Consultations — Muhammad Ilham",
   description: "Get in touch for software engineering, web application consulting, or full-time opportunities.",
 };
 

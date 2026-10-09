@@ -4,7 +4,7 @@ import { SectionHeader } from "@/components/portfolio/shared/section-header";
 import { HomeCta } from "@/components/portfolio/home/home-cta";
 
 export const metadata: Metadata = {
-  title: "Contributions & Open Source — Zail Yan Zali",
+  title: "Contributions & Open Source — Muhammad Ilham",
   description: "Public GitHub contributions, 52-week activity heatmap, open source repositories, and programming language metrics.",
 };
 

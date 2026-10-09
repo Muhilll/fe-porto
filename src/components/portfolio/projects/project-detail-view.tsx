@@ -123,9 +123,9 @@ export function ProjectDetailView({ slugOrId }: ProjectDetailViewProps) {
           </nav>
         </div>
 
-        {/* Hero Header Area */}
+        {/* Hero Header Area (Full Horizontal Width) */}
         <FadeIn>
-          <header className="space-y-6 max-w-4xl">
+          <header className="space-y-6 w-full">
             {/* Meta Badges */}
             <div className="flex flex-wrap items-center gap-2.5">
               <span className="px-3.5 py-1 rounded-full text-xs font-mono font-semibold bg-foreground text-background">
@@ -144,18 +144,18 @@ export function ProjectDetailView({ slugOrId }: ProjectDetailViewProps) {
             </div>
 
             {/* Title */}
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-foreground leading-[1.15]">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-foreground leading-[1.12]">
               {project.title}
             </h1>
 
             {/* Short Description Lead */}
             {project.shortDescription && (
-              <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
+              <p className="text-base sm:text-lg lg:text-xl text-muted-foreground leading-relaxed max-w-4xl">
                 {project.shortDescription}
               </p>
             )}
 
-            {/* Action Buttons Row */}
+            {/* Action Buttons Row (Full Width spanning) */}
             <div className="flex flex-wrap items-center gap-3 pt-2">
               {project.demoUrl && (
                 <a
@@ -194,9 +194,9 @@ export function ProjectDetailView({ slugOrId }: ProjectDetailViewProps) {
           </header>
         </FadeIn>
 
-        {/* Featured Cover Media */}
+        {/* Featured Cover Media (Full Horizontal Width) */}
         <FadeIn delay={0.1}>
-          <div className="relative aspect-[16/9] w-full rounded-3xl overflow-hidden border border-border/80 bg-muted shadow-lg">
+          <div className="relative aspect-[16/9] w-full rounded-3xl overflow-hidden border border-border/80 bg-muted shadow-xl">
             <Image
               src={project.image}
               alt={project.title}
@@ -209,60 +209,42 @@ export function ProjectDetailView({ slugOrId }: ProjectDetailViewProps) {
           </div>
         </FadeIn>
 
-        {/* Main Content & Sidebar Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 pt-4">
-          {/* Main Case Study Content (8 Columns) */}
-          <div className="lg:col-span-8 space-y-10">
-            <div className="p-8 sm:p-10 rounded-3xl border border-border/80 bg-background/90 shadow-sm space-y-8">
-              <div className="flex items-center gap-2.5 pb-4 border-b border-border/60">
-                <Layers className="w-5 h-5 text-foreground" />
-                <h2 className="text-xl font-bold text-foreground">Studi Kasus & Detail Implementasi</h2>
-              </div>
-
-              {/* Rich Content Renderer */}
-              {isHtmlContent ? (
-                <div
-                  className="prose prose-base sm:prose-lg dark:prose-invert max-w-none prose-headings:font-semibold prose-headings:tracking-tight prose-img:rounded-2xl prose-img:border prose-img:border-border/80 prose-img:shadow-md prose-a:text-foreground prose-a:underline hover:prose-a:opacity-80 leading-relaxed text-muted-foreground"
-                  dangerouslySetInnerHTML={{ __html: project.fullDescription }}
-                />
-              ) : (
-                <div className="space-y-4 text-base text-muted-foreground leading-relaxed whitespace-pre-line">
-                  {project.fullDescription || project.shortDescription || "Tidak ada rincian tambahan untuk proyek ini."}
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Sidebar / Quick Overview (4 Columns) */}
-          <div className="lg:col-span-4 space-y-8">
-            {/* Tech Stack Card */}
+        {/* Key Specifications & Metadata Highlights Grid (Full Width) */}
+        <FadeIn delay={0.15}>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Card 1: Tech Stack & Tools */}
             {project.tags && project.tags.length > 0 && (
-              <div className="p-6 rounded-3xl border border-border/80 bg-background/90 space-y-4 shadow-sm">
-                <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground uppercase tracking-wider">
-                  <Tag className="w-4 h-4 text-foreground" />
-                  <span>Tech Stack & Tools</span>
+              <div className="p-6 sm:p-7 rounded-3xl border border-border/80 bg-background/90 shadow-sm space-y-4 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground uppercase tracking-wider mb-3">
+                    <Tag className="w-4 h-4 text-foreground" />
+                    <span>Tech Stack & Tools</span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {project.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="px-3 py-1.5 rounded-lg text-xs font-mono font-medium bg-muted/60 text-foreground border border-border/60 hover:border-foreground/40 transition-colors"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
                 </div>
-                <div className="flex flex-wrap gap-2">
-                  {project.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="px-3 py-1.5 rounded-lg text-xs font-mono font-medium bg-muted/60 text-foreground border border-border/60"
-                    >
-                      {tag}
-                    </span>
-                  ))}
+                <div className="pt-3 text-[11px] font-mono text-muted-foreground border-t border-border/40">
+                  {project.tags.length} teknologi & pustaka utama
                 </div>
               </div>
             )}
 
-            {/* Key Architecture Points */}
+            {/* Card 2: Key Architecture Points */}
             {project.architecturePoints && project.architecturePoints.length > 0 && (
-              <div className="p-6 rounded-3xl border border-border/80 bg-background/90 space-y-4 shadow-sm">
-                <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground uppercase tracking-wider">
-                  <CheckCircle2 className="w-4 h-4 text-foreground" />
+              <div className="p-6 sm:p-7 rounded-3xl border border-border/80 bg-background/90 shadow-sm space-y-4">
+                <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground uppercase tracking-wider mb-3">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500" />
                   <span>Key Architecture Points</span>
                 </div>
-                <ul className="space-y-3">
+                <ul className="space-y-2.5">
                   {project.architecturePoints.map((point) => (
                     <li key={point} className="flex items-start gap-2.5 text-xs text-foreground/90 leading-relaxed">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 shrink-0" />
@@ -273,40 +255,89 @@ export function ProjectDetailView({ slugOrId }: ProjectDetailViewProps) {
               </div>
             )}
 
-            {/* Performance & Metrics */}
-            {project.metrics && project.metrics.length > 0 && (
-              <div className="p-6 rounded-3xl border border-border/80 bg-background/90 space-y-4 shadow-sm">
-                <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground uppercase tracking-wider">
+            {/* Card 3: Project Actions & Metrics */}
+            <div className="p-6 sm:p-7 rounded-3xl border border-border/80 bg-background/90 shadow-sm space-y-4 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground uppercase tracking-wider mb-3">
                   <Activity className="w-4 h-4 text-foreground" />
-                  <span>Performance & Impact</span>
+                  <span>Aksi & Tautan Proyek</span>
                 </div>
-                <div className="grid grid-cols-1 gap-3">
-                  {project.metrics.map((m) => (
-                    <div
-                      key={m.label}
-                      className="p-3.5 rounded-2xl bg-muted/40 border border-border/60 space-y-1"
+
+                {/* Metrics display if present */}
+                {project.metrics && project.metrics.length > 0 && (
+                  <div className="grid grid-cols-2 gap-2 mb-4">
+                    {project.metrics.map((m) => (
+                      <div
+                        key={m.label}
+                        className="p-3 rounded-2xl bg-muted/40 border border-border/60 space-y-0.5"
+                      >
+                        <div className="text-[10px] font-mono text-muted-foreground truncate">{m.label}</div>
+                        <div className="text-sm font-bold font-mono text-foreground">{m.value}</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <div className="space-y-2.5">
+                  {project.demoUrl && (
+                    <a
+                      href={project.demoUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold bg-foreground text-background hover:opacity-90 transition-opacity shadow-xs"
                     >
-                      <div className="text-[11px] font-mono text-muted-foreground">{m.label}</div>
-                      <div className="text-base font-bold font-mono text-foreground">{m.value}</div>
-                    </div>
-                  ))}
+                      <span>Kunjungi Demo Langsung</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                  )}
+                  {project.githubUrl && (
+                    <a
+                      href={project.githubUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold border border-border bg-background hover:bg-muted text-foreground transition-colors"
+                    >
+                      <GithubIcon className="w-4 h-4" />
+                      <span>Lihat Source Code</span>
+                    </a>
+                  )}
                 </div>
               </div>
-            )}
 
-            {/* Quick Actions Card */}
-            <div className="p-6 rounded-3xl border border-border/80 bg-background/90 space-y-4 shadow-sm">
-              <h3 className="text-sm font-semibold text-foreground">Aksi Proyek</h3>
-              <div className="space-y-2">
+              <div className="pt-3 text-[11px] font-mono text-muted-foreground flex items-center justify-between border-t border-border/40">
+                <span>Kategori: {project.category}</span>
+                <span>Tahun: {project.year}</span>
+              </div>
+            </div>
+          </div>
+        </FadeIn>
+
+        {/* Main Case Study Article (Full Horizontal Canvas) */}
+        <FadeIn delay={0.2}>
+          <article className="w-full p-8 sm:p-12 lg:p-16 rounded-3xl border border-border/80 bg-background/90 shadow-sm space-y-10">
+            {/* Header bar of Case Study */}
+            <div className="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-border/60">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-2xl bg-muted/80 text-foreground border border-border/60">
+                  <Layers className="w-5 h-5" />
+                </div>
+                <div>
+                  <h2 className="text-xl sm:text-2xl font-bold text-foreground">Studi Kasus & Detail Implementasi</h2>
+                  <p className="text-xs font-mono text-muted-foreground mt-0.5">Dokumentasi teknis, arsitektur, dan ringkasan implementasi sistem</p>
+                </div>
+              </div>
+
+              {/* Quick Jump Action Chips */}
+              <div className="flex items-center gap-2">
                 {project.demoUrl && (
                   <a
                     href={project.demoUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold bg-foreground text-background hover:opacity-90 transition-opacity"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-foreground text-background hover:opacity-90 transition-opacity"
                   >
-                    <span>Kunjungi Demo Langsung</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
+                    <span>Live Demo</span>
+                    <ExternalLink className="w-3 h-3" />
                   </a>
                 )}
                 {project.githubUrl && (
@@ -314,23 +345,66 @@ export function ProjectDetailView({ slugOrId }: ProjectDetailViewProps) {
                     href={project.githubUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold border border-border bg-background hover:bg-muted text-foreground transition-colors"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold border border-border bg-background hover:bg-muted text-foreground transition-colors"
                   >
-                    <GithubIcon className="w-4 h-4" />
-                    <span>Lihat Source Code</span>
+                    <GithubIcon className="w-3.5 h-3.5" />
+                    <span>Repo</span>
                   </a>
                 )}
+              </div>
+            </div>
+
+            {/* Rich Content Renderer (Full Width) */}
+            {isHtmlContent ? (
+              <div
+                className="prose prose-base sm:prose-lg lg:prose-xl dark:prose-invert max-w-none 
+                  prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-foreground
+                  prose-h2:text-2xl sm:prose-h2:3xl prose-h2:border-b prose-h2:border-border/60 prose-h2:pb-3 prose-h2:mt-10
+                  prose-h3:text-xl sm:prose-h3:2xl prose-h3:mt-8
+                  prose-p:text-muted-foreground prose-p:leading-relaxed
+                  prose-a:text-foreground prose-a:underline hover:prose-a:opacity-80 prose-a:font-medium
+                  prose-blockquote:border-l-4 prose-blockquote:border-foreground prose-blockquote:bg-muted/40 prose-blockquote:py-3 prose-blockquote:px-6 prose-blockquote:rounded-r-2xl prose-blockquote:italic prose-blockquote:text-foreground/90
+                  prose-code:font-mono prose-code:text-foreground prose-code:bg-muted/80 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md prose-code:text-xs sm:prose-code:text-sm
+                  prose-pre:bg-[#181825] prose-pre:border prose-pre:border-border/80 prose-pre:p-6 prose-pre:rounded-2xl prose-pre:overflow-x-auto
+                  prose-img:rounded-2xl prose-img:border prose-img:border-border/80 prose-img:shadow-lg prose-img:mx-auto prose-img:my-10
+                  prose-hr:border-border/60 prose-hr:my-10
+                  prose-ul:list-disc prose-ul:list-inside prose-ul:text-muted-foreground
+                  prose-ol:list-decimal prose-ol:list-inside prose-ol:text-muted-foreground
+                  leading-relaxed text-muted-foreground"
+                dangerouslySetInnerHTML={{ __html: project.fullDescription }}
+              />
+            ) : (
+              <div className="space-y-4 text-base sm:text-lg text-muted-foreground leading-relaxed whitespace-pre-line">
+                {project.fullDescription || project.shortDescription || "Tidak ada rincian tambahan untuk proyek ini."}
+              </div>
+            )}
+
+            {/* Bottom Footer Actions */}
+            <div className="pt-8 border-t border-border/60 flex flex-wrap items-center justify-between gap-4">
+              <div className="text-xs font-mono text-muted-foreground">
+                Studi Kasus Proyek · {project.category} ({project.year})
+              </div>
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={handleCopyLink}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-mono border border-border/80 bg-background hover:bg-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                >
+                  {copied ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Share2 className="w-3.5 h-3.5" />}
+                  <span>{copied ? "Tautan Tersalin!" : "Bagikan"}</span>
+                </button>
                 <Link
                   href="/projects"
-                  className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-colors"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-mono font-medium border border-border/80 bg-muted/40 hover:bg-muted text-foreground transition-colors"
                 >
                   <ArrowLeft className="w-3.5 h-3.5" />
-                  <span>Lihat Semua Proyek</span>
+                  <span>Semua Proyek</span>
                 </Link>
               </div>
             </div>
-          </div>
-        </div>
+          </article>
+        </FadeIn>
+
 
         {/* Related Projects Section */}
         {relatedProjects.length > 0 && (

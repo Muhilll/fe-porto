@@ -174,8 +174,10 @@ export default function PortfolioProjectsPage() {
       });
     } finally {
       setIsUploading(false);
+      if (e.target) e.target.value = "";
     }
   };
+
 
   // Tag helper
   const handleAddTag = () => {

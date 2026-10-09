@@ -1,5 +1,7 @@
-import { cva } from "class-variance-authority";
+import React from "react";
+import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
+
 
 const alertVariants = cva(
   "relative flex items-start gap-3 rounded-lg px-4 py-3 text-sm",
@@ -43,7 +45,41 @@ const iconColorMap = {
   "accent-danger": "text-red-500",
 };
 
-function Alert({ className, variant = "default", children, ...props }) {
+export type AlertVariant = NonNullable<VariantProps<typeof alertVariants>["variant"]>;
+
+export interface AlertProps extends React.HTMLAttributes<HTMLDivElement> {
+  className?: string;
+  variant?: AlertVariant;
+  children?: React.ReactNode;
+}
+
+export interface AlertIconProps {
+  variant?: AlertVariant;
+  icon: React.ComponentType<{ className?: string; "data-slot"?: string }>;
+  className?: string;
+}
+
+export interface AlertContentProps extends React.HTMLAttributes<HTMLDivElement> {
+  className?: string;
+  children?: React.ReactNode;
+}
+
+export interface AlertTitleProps extends React.HTMLAttributes<HTMLParagraphElement> {
+  className?: string;
+  children?: React.ReactNode;
+}
+
+export interface AlertDescriptionProps extends React.HTMLAttributes<HTMLParagraphElement> {
+  className?: string;
+  children?: React.ReactNode;
+}
+
+export interface AlertDismissProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  className?: string;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+}
+
+function Alert({ className, variant = "default", children, ...props }: AlertProps) {
   return (
     <div
       data-slot="alert"
@@ -56,7 +92,7 @@ function Alert({ className, variant = "default", children, ...props }) {
   );
 }
 
-function AlertIcon({ variant = "default", icon: Icon, className }) {
+function AlertIcon({ variant = "default", icon: Icon, className }: AlertIconProps) {
   return (
     <Icon
       data-slot="alert-icon"
@@ -65,7 +101,7 @@ function AlertIcon({ variant = "default", icon: Icon, className }) {
   );
 }
 
-function AlertContent({ children, className }) {
+function AlertContent({ children, className }: AlertContentProps) {
   return (
     <div data-slot="alert-content" className={cn("flex-1", className)}>
       {children}
@@ -73,7 +109,7 @@ function AlertContent({ children, className }) {
   );
 }
 
-function AlertTitle({ children, className }) {
+function AlertTitle({ children, className }: AlertTitleProps) {
   return (
     <p data-slot="alert-title" className={cn("font-semibold mb-0.5", className)}>
       {children}
@@ -81,7 +117,7 @@ function AlertTitle({ children, className }) {
   );
 }
 
-function AlertDescription({ children, className }) {
+function AlertDescription({ children, className }: AlertDescriptionProps) {
   return (
     <p data-slot="alert-description" className={cn("text-sm opacity-80", className)}>
       {children}
@@ -89,7 +125,7 @@ function AlertDescription({ children, className }) {
   );
 }
 
-function AlertDismiss({ onClick, className }) {
+function AlertDismiss({ onClick, className, ...props }: AlertDismissProps) {
   return (
     <button
       data-slot="alert-dismiss"
@@ -99,6 +135,7 @@ function AlertDismiss({ onClick, className }) {
         "absolute top-2.5 right-3 opacity-60 hover:opacity-100 transition-opacity",
         className
       )}
+      {...props}
     >
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M18 6 6 18M6 6l12 12"/>
@@ -106,6 +143,7 @@ function AlertDismiss({ onClick, className }) {
     </button>
   );
 }
+
 
 export {
   Alert,

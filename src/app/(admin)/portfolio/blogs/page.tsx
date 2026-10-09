@@ -248,8 +248,10 @@ export default function PortfolioBlogsManagementPage() {
       notification.danger({ title: "Upload Gagal", message: err.message || "Gagal mengupload cover" });
     } finally {
       setIsUploading(false);
+      if (e.target) e.target.value = "";
     }
   };
+
 
   // Tag Management
   const handleAddTag = () => {

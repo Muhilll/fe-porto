@@ -42,9 +42,21 @@ export async function apiClient<T = unknown>(
     headers,
   });
 
-  const json = await res.json();
+  let json: any = null;
+  const rawText = await res.text();
+  try {
+    json = JSON.parse(rawText);
+  } catch {
+    json = { success: false, message: rawText || `HTTP ${res.status}` };
+  }
 
   if (!res.ok) {
+    if (res.status === 401 && !skipAuth && typeof window !== "undefined") {
+      // Token expired / invalid, remove from storage
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+    }
+
     // API returns { success: false, message: "..." }
     const errorMessage = json?.message || `Request failed with status ${res.status}`;
     const error = new Error(errorMessage) as Error & { status: number; data: unknown };
@@ -54,4 +66,5 @@ export async function apiClient<T = unknown>(
   }
 
   return json;
+
 }

@@ -18,21 +18,32 @@ const NotificationContext = createContext<any>(null);
 function NotificationProvider({ children }: { children: React.ReactNode }) {
   const [notifications, setNotifications] = useState<any[]>([]);
 
-  const add = useCallback((notif: any) => {
-    const id = Date.now() + Math.random();
-    setNotifications((prev) => [...prev, { id, ...notif }]);
-    if (notif.duration !== 0) {
-      setTimeout(() => remove(id), notif.duration ?? 4000);
-    }
-    return id;
-  }, []);
-
   const remove = useCallback((id: number) => {
     setNotifications((prev) => prev.filter((n) => n.id !== id));
   }, []);
 
+  const add = useCallback((notif: any) => {
+    const id = Date.now() + Math.random();
+    // Normalize variant from type or variant
+    const rawType = notif?.variant || notif?.type || "default";
+    const variant = rawType === "error" ? "danger" : rawType;
+    const normalized = { ...notif, variant };
+
+    setNotifications((prev) => [...prev, { id, ...normalized }]);
+    if (notif?.duration !== 0) {
+      setTimeout(() => remove(id), notif?.duration ?? 4000);
+    }
+    return id;
+  }, [remove]);
+
+  const success = useCallback((opts: any) => add({ variant: "success", ...opts }), [add]);
+  const danger = useCallback((opts: any) => add({ variant: "danger", ...opts }), [add]);
+  const error = useCallback((opts: any) => add({ variant: "danger", ...opts }), [add]);
+  const warning = useCallback((opts: any) => add({ variant: "warning", ...opts }), [add]);
+  const info = useCallback((opts: any) => add({ variant: "default", ...opts }), [add]);
+
   return (
-    <NotificationContext.Provider value={{ add, remove }}>
+    <NotificationContext.Provider value={{ add, remove, success, danger, error, warning, info }}>
       {children}
       <NotificationContainer notifications={notifications} onRemove={remove} />
     </NotificationContext.Provider>
@@ -40,8 +51,22 @@ function NotificationProvider({ children }: { children: React.ReactNode }) {
 }
 
 function useNotification() {
-  return useContext(NotificationContext);
+  const ctx = useContext(NotificationContext);
+  if (!ctx) {
+    // Graceful fallback if outside provider
+    return {
+      add: () => 0,
+      remove: () => {},
+      success: () => 0,
+      danger: () => 0,
+      error: () => 0,
+      warning: () => 0,
+      info: () => 0,
+    };
+  }
+  return ctx;
 }
+
 
 /* ─── Container ───────────────────────────────────────── */
 function NotificationContainer({ notifications, onRemove, position = "top-right" }: any) {

@@ -7,29 +7,35 @@ import Underline from "@tiptap/extension-underline";
 import TextAlign from "@tiptap/extension-text-align";
 import Highlight from "@tiptap/extension-highlight";
 import ImageExtension from "@tiptap/extension-image";
+import Link from "@tiptap/extension-link";
 import { TextStyle } from "@tiptap/extension-text-style";
 import Color from "@tiptap/extension-color";
 import { UploadService } from "@/features/portfolio/upload/upload-service";
 import {
   Bold,
   Italic,
-  UnderlineIcon,
+  Underline as UnderlineIcon,
   Strikethrough,
+  Highlighter,
   Heading2,
   Heading3,
   List,
   ListOrdered,
   Quote,
   Code,
+  FileCode,
   Minus,
   Undo,
   Redo,
   AlignLeft,
   AlignCenter,
   AlignRight,
+  AlignJustify,
   ImageIcon,
   Upload,
   Link as LinkIcon,
+  Unlink,
+  RemoveFormatting,
   Eye,
   Edit3,
   Loader2,
@@ -87,6 +93,8 @@ export function ProjectRichEditor({
   const [isUploading, setIsUploading] = useState(false);
   const [showUrlDialog, setShowUrlDialog] = useState(false);
   const [imageUrlInput, setImageUrlInput] = useState("");
+  const [showLinkDialog, setShowLinkDialog] = useState(false);
+  const [linkUrlInput, setLinkUrlInput] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const editor = useEditor({
@@ -99,6 +107,14 @@ export function ProjectRichEditor({
       Underline,
       TextAlign.configure({ types: ["heading", "paragraph"] }),
       Highlight.configure({ multicolor: true }),
+      Link.configure({
+        openOnClick: false,
+        HTMLAttributes: {
+          class: "text-blue-600 dark:text-blue-400 underline underline-offset-4 hover:opacity-80",
+          target: "_blank",
+          rel: "noopener noreferrer",
+        },
+      }),
       ImageExtension.configure({
         inline: false,
         allowBase64: true,
@@ -166,6 +182,37 @@ export function ProjectRichEditor({
     }
   };
 
+  // Handle link insert or toggle
+  const handleOpenLinkDialog = () => {
+    if (editor.isActive("link")) {
+      // If already linked, toggle or open dialog with current href
+      const previousUrl = editor.getAttributes("link").href || "";
+      setLinkUrlInput(previousUrl);
+    } else {
+      setLinkUrlInput("");
+    }
+    setShowLinkDialog(true);
+  };
+
+  const handleApplyLink = () => {
+    if (!linkUrlInput.trim()) {
+      editor.chain().focus().unsetLink().run();
+    } else {
+      let finalUrl = linkUrlInput.trim();
+      if (!/^https?:\/\//i.test(finalUrl) && !finalUrl.startsWith("#") && !finalUrl.startsWith("mailto:")) {
+        finalUrl = `https://${finalUrl}`;
+      }
+      editor
+        .chain()
+        .focus()
+        .extendMarkRange("link")
+        .setLink({ href: finalUrl })
+        .run();
+    }
+    setLinkUrlInput("");
+    setShowLinkDialog(false);
+  };
+
   return (
     <div className="rounded-2xl border border-border bg-background overflow-hidden shadow-xs focus-within:border-foreground/40 transition-colors">
       {/* Top Toolbar */}
@@ -193,14 +240,14 @@ export function ProjectRichEditor({
           <ToolbarBtn
             onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
             active={editor.isActive("heading", { level: 2 })}
-            title="Heading 2"
+            title="Heading 2 (Judul Besar)"
           >
             <Heading2 className="w-3.5 h-3.5" />
           </ToolbarBtn>
           <ToolbarBtn
             onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
             active={editor.isActive("heading", { level: 3 })}
-            title="Heading 3"
+            title="Heading 3 (Sub-Judul)"
           >
             <Heading3 className="w-3.5 h-3.5" />
           </ToolbarBtn>
@@ -232,9 +279,16 @@ export function ProjectRichEditor({
           <ToolbarBtn
             onClick={() => editor.chain().focus().toggleStrike().run()}
             active={editor.isActive("strike")}
-            title="Coretan"
+            title="Coretan (Strikethrough)"
           >
             <Strikethrough className="w-3.5 h-3.5" />
+          </ToolbarBtn>
+          <ToolbarBtn
+            onClick={() => editor.chain().focus().toggleHighlight().run()}
+            active={editor.isActive("highlight")}
+            title="Sorot Warna / Highlight"
+          >
+            <Highlighter className="w-3.5 h-3.5" />
           </ToolbarBtn>
 
           <Divider />
@@ -261,6 +315,13 @@ export function ProjectRichEditor({
           >
             <AlignRight className="w-3.5 h-3.5" />
           </ToolbarBtn>
+          <ToolbarBtn
+            onClick={() => editor.chain().focus().setTextAlign("justify").run()}
+            active={editor.isActive({ textAlign: "justify" })}
+            title="Rata Kanan Kiri (Justify)"
+          >
+            <AlignJustify className="w-3.5 h-3.5" />
+          </ToolbarBtn>
 
           <Divider />
 
@@ -268,36 +329,73 @@ export function ProjectRichEditor({
           <ToolbarBtn
             onClick={() => editor.chain().focus().toggleBulletList().run()}
             active={editor.isActive("bulletList")}
-            title="Bullet List"
+            title="Daftar Poin (Bullet List)"
           >
             <List className="w-3.5 h-3.5" />
           </ToolbarBtn>
           <ToolbarBtn
             onClick={() => editor.chain().focus().toggleOrderedList().run()}
             active={editor.isActive("orderedList")}
-            title="Numbered List"
+            title="Daftar Angka (Numbered List)"
           >
             <ListOrdered className="w-3.5 h-3.5" />
           </ToolbarBtn>
           <ToolbarBtn
             onClick={() => editor.chain().focus().toggleBlockquote().run()}
             active={editor.isActive("blockquote")}
-            title="Kutipan"
+            title="Kutipan (Blockquote)"
           >
             <Quote className="w-3.5 h-3.5" />
+          </ToolbarBtn>
+
+          <Divider />
+
+          {/* Code */}
+          <ToolbarBtn
+            onClick={() => editor.chain().focus().toggleCode().run()}
+            active={editor.isActive("code")}
+            title="Kode Baris (Inline Code)"
+          >
+            <Code className="w-3.5 h-3.5" />
           </ToolbarBtn>
           <ToolbarBtn
             onClick={() => editor.chain().focus().toggleCodeBlock().run()}
             active={editor.isActive("codeBlock")}
-            title="Code Block"
+            title="Blok Kode (Code Block)"
           >
-            <Code className="w-3.5 h-3.5" />
+            <FileCode className="w-3.5 h-3.5" />
           </ToolbarBtn>
           <ToolbarBtn
             onClick={() => editor.chain().focus().setHorizontalRule().run()}
             title="Garis Pembatas (Divider)"
           >
             <Minus className="w-3.5 h-3.5" />
+          </ToolbarBtn>
+
+          <Divider />
+
+          {/* Link */}
+          <ToolbarBtn
+            onClick={handleOpenLinkDialog}
+            active={editor.isActive("link")}
+            title="Tautan / Link"
+          >
+            <LinkIcon className="w-3.5 h-3.5" />
+          </ToolbarBtn>
+          {editor.isActive("link") && (
+            <ToolbarBtn
+              onClick={() => editor.chain().focus().unsetLink().run()}
+              title="Hapus Tautan (Unlink)"
+            >
+              <Unlink className="w-3.5 h-3.5 text-red-500" />
+            </ToolbarBtn>
+          )}
+
+          <ToolbarBtn
+            onClick={() => editor.chain().focus().clearNodes().unsetAllMarks().run()}
+            title="Hapus Pemformatan (Clear Formatting)"
+          >
+            <RemoveFormatting className="w-3.5 h-3.5" />
           </ToolbarBtn>
 
           <Divider />
@@ -341,7 +439,7 @@ export function ProjectRichEditor({
           <button
             type="button"
             onClick={() => setIsPreview((p) => !p)}
-            className={`px-2.5 py-1 rounded-lg text-xs font-mono font-medium transition-colors flex items-center gap-1.5 ${
+            className={`px-2.5 py-1 rounded-lg text-xs font-mono font-medium transition-colors flex items-center gap-1.5 cursor-pointer ${
               isPreview
                 ? "bg-foreground text-background font-semibold"
                 : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -353,17 +451,60 @@ export function ProjectRichEditor({
         </div>
       </div>
 
-      {/* URL Dialog Drawer */}
-      {showUrlDialog && (
+      {/* Link Dialog Drawer */}
+      {showLinkDialog && (
         <div className="p-3 bg-muted/60 border-b border-border flex items-center gap-2 text-xs animate-in fade-in">
           <LinkIcon className="w-4 h-4 text-muted-foreground shrink-0" />
           <input
             type="url"
+            value={linkUrlInput}
+            onChange={(e) => setLinkUrlInput(e.target.value)}
+            placeholder="https://github.com/proyek-anda atau https://..."
+            className="flex-1 rounded-lg border border-input bg-background px-3 py-1.5 text-xs text-foreground focus:outline-none focus:border-foreground"
+            onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), handleApplyLink())}
+            autoFocus
+          />
+          <button
+            type="button"
+            onClick={handleApplyLink}
+            className="px-3 py-1.5 rounded-lg bg-foreground text-background font-medium hover:opacity-90 cursor-pointer"
+          >
+            Terapkan
+          </button>
+          {editor.isActive("link") && (
+            <button
+              type="button"
+              onClick={() => {
+                editor.chain().focus().unsetLink().run();
+                setShowLinkDialog(false);
+              }}
+              className="px-2 py-1.5 text-red-500 hover:underline cursor-pointer"
+            >
+              Hapus Link
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={() => setShowLinkDialog(false)}
+            className="px-2 py-1.5 text-muted-foreground hover:text-foreground cursor-pointer"
+          >
+            Batal
+          </button>
+        </div>
+      )}
+
+      {/* URL Image Dialog Drawer */}
+      {showUrlDialog && (
+        <div className="p-3 bg-muted/60 border-b border-border flex items-center gap-2 text-xs animate-in fade-in">
+          <ImageIcon className="w-4 h-4 text-muted-foreground shrink-0" />
+          <input
+            type="url"
             value={imageUrlInput}
             onChange={(e) => setImageUrlInput(e.target.value)}
-            placeholder="https://example.com/screenshot.png"
+            placeholder="https://images.unsplash.com/... atau URL foto"
             className="flex-1 rounded-lg border border-input bg-background px-3 py-1.5 text-xs text-foreground focus:outline-none focus:border-foreground"
             onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), handleInsertImageUrl())}
+            autoFocus
           />
           <button
             type="button"
@@ -387,7 +528,9 @@ export function ProjectRichEditor({
         <div
           className="p-6 prose prose-sm dark:prose-invert max-w-none bg-background overflow-y-auto"
           style={{ minHeight }}
-          dangerouslySetInnerHTML={{ __html: editor.getHTML() || "<p class='text-muted-foreground italic'>Belum ada konten ditulis.</p>" }}
+          dangerouslySetInnerHTML={{
+            __html: editor.getHTML() || "<p class='text-muted-foreground italic'>Belum ada konten ditulis.</p>",
+          }}
         />
       ) : (
         <EditorContent editor={editor} />
@@ -404,7 +547,7 @@ export function ProjectRichEditor({
         </div>
         <div className="flex items-center gap-1.5 text-[10px]">
           <HelpCircle className="w-3 h-3" />
-          <span className="hidden sm:inline">Mendukung format HTML semantik, lists, dan screenshot</span>
+          <span className="hidden sm:inline">Mendukung heading, bullet/numbered list, link, highlight, dan gambar</span>
         </div>
       </div>
     </div>

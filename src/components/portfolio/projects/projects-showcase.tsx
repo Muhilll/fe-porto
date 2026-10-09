@@ -10,12 +10,13 @@ import { projectsData } from "@/data/projects";
 import { useProjects } from "@/features/portfolio/project/hooks/use-project";
 import { getNormalizedProjects } from "@/features/portfolio/adapters";
 import { SectionHeader } from "@/components/portfolio/shared/section-header";
+import { ProjectsGridSkeleton } from "@/components/portfolio/shared/skeletons";
 
 const categories = ["All", "Full-Stack", "Frontend", "Backend / API", "System / Tools"] as const;
 
 export function ProjectsShowcase() {
   const [activeCategory, setActiveCategory] = useState<string>("All");
-  const { data: apiProjects } = useProjects();
+  const { data: apiProjects, isLoading } = useProjects();
   const allProjects = getNormalizedProjects(apiProjects);
 
   const filteredProjects =
@@ -82,8 +83,11 @@ export function ProjectsShowcase() {
         </div>
 
         {/* Projects Grid with Smooth popLayout Physics */}
-        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 gap-8 min-h-[400px]">
-          <AnimatePresence mode="popLayout">
+        {isLoading ? (
+          <ProjectsGridSkeleton count={4} />
+        ) : (
+          <motion.div layout className="grid grid-cols-1 md:grid-cols-2 gap-8 min-h-[400px]">
+            <AnimatePresence mode="popLayout">
             {filteredProjects.map((project) => (
               <motion.article
                 layout="position"
@@ -247,6 +251,7 @@ export function ProjectsShowcase() {
             )}
           </AnimatePresence>
         </motion.div>
+        )}
       </div>
     </section>
   );

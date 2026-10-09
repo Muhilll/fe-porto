@@ -8,6 +8,7 @@ import { CertificateModal } from "@/components/portfolio/certificates/certificat
 import { FadeIn } from "@/components/portfolio/shared/motion-wrapper";
 import { useCertificates } from "@/features/portfolio/certificate/hooks/use-certificate";
 import { getNormalizedCertificates } from "@/features/portfolio/adapters";
+import { CertificatesGridSkeleton } from "@/components/portfolio/shared/skeletons";
 
 export function CertificatesGrid() {
   const [selectedCert, setSelectedCert] = useState<CertificateItem | null>(null);
@@ -17,8 +18,11 @@ export function CertificatesGrid() {
 
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {certificates.map((cert, idx) => (
+      {isLoading ? (
+        <CertificatesGridSkeleton count={6} />
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {certificates.map((cert, idx) => (
           <FadeIn key={cert.id} delay={idx * 0.08} className="h-full">
             <div className="group flex flex-col justify-between h-full rounded-3xl border border-border/80 bg-background/90 overflow-hidden hover:border-foreground/40 transition-all duration-300 shadow-sm hover:shadow-md">
               <div>
@@ -93,8 +97,9 @@ export function CertificatesGrid() {
               </div>
             </div>
           </FadeIn>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
       {/* Modal */}
       <CertificateModal

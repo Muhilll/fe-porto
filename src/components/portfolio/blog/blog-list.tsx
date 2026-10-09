@@ -7,6 +7,7 @@ import { ArrowRight, Clock, Calendar, Search, Star, Sparkles } from "lucide-reac
 import { FadeIn } from "@/components/portfolio/shared/motion-wrapper";
 import { useBlogs } from "@/features/portfolio/blog/hooks/use-blog";
 import { getNormalizedBlogs } from "@/features/portfolio/adapters";
+import { BlogsGridSkeleton } from "@/components/portfolio/shared/skeletons";
 
 export function BlogList() {
   const { data: apiBlogs, isLoading } = useBlogs();
@@ -74,7 +75,9 @@ export function BlogList() {
       </div>
 
       {/* Blogs Feed */}
-      {filteredBlogs.length === 0 ? (
+      {isLoading ? (
+        <BlogsGridSkeleton count={4} />
+      ) : filteredBlogs.length === 0 ? (
         <div className="p-12 text-center rounded-3xl border border-dashed border-border/80 space-y-2">
           <p className="text-sm font-semibold text-foreground">No matching articles found</p>
           <p className="text-xs text-muted-foreground">

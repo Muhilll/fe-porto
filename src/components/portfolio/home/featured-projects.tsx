@@ -8,9 +8,10 @@ import { useProjects } from "@/features/portfolio/project/hooks/use-project";
 import { getNormalizedProjects } from "@/features/portfolio/adapters";
 import { SectionHeader } from "@/components/portfolio/shared/section-header";
 import { FadeIn } from "@/components/portfolio/shared/motion-wrapper";
+import { ProjectsGridSkeleton } from "@/components/portfolio/shared/skeletons";
 
 export function FeaturedProjects() {
-  const { data: apiProjects } = useProjects();
+  const { data: apiProjects, isLoading } = useProjects();
   const allProjects = getNormalizedProjects(apiProjects);
 
   const featured = allProjects.filter((p) => p.featured);
@@ -29,13 +30,16 @@ export function FeaturedProjects() {
             href="/projects"
             className="inline-flex items-center gap-2 text-sm font-semibold text-foreground hover:opacity-80 transition-opacity self-start sm:self-end group"
           >
-            <span>View All Projects ({allProjects.length})</span>
+            <span>View All Projects {!isLoading && `(${allProjects.length})`}</span>
             <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
           </Link>
         </div>
 
         {/* Projects Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {isLoading ? (
+          <ProjectsGridSkeleton count={3} />
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {displayProjects.map((project, idx) => (
             <FadeIn key={project.id} delay={idx * 0.1} className="h-full">
               <div className="group flex flex-col h-full rounded-2xl border border-border/80 bg-background/80 hover:border-foreground/40 transition-all duration-300 overflow-hidden shadow-sm hover:shadow-md">
@@ -128,7 +132,8 @@ export function FeaturedProjects() {
               </div>
             </FadeIn>
           ))}
-        </div>
+          </div>
+        )}
       </div>
     </section>
   );

@@ -4,14 +4,17 @@ import { useExperiences, useEducations } from "@/features/portfolio/about/hooks/
 import { getNormalizedExperiences, getNormalizedEducations } from "@/features/portfolio/adapters";
 import { SectionHeader } from "@/components/portfolio/shared/section-header";
 import { FadeIn } from "@/components/portfolio/shared/motion-wrapper";
+import { TimelineSkeleton } from "@/components/portfolio/shared/skeletons";
 import { Briefcase, GraduationCap } from "lucide-react";
 
 export function ExperienceTimeline() {
-  const { data: apiExperiences } = useExperiences();
-  const { data: apiEducations } = useEducations();
+  const { data: apiExperiences, isLoading: isLoadingExp } = useExperiences();
+  const { data: apiEducations, isLoading: isLoadingEdu } = useEducations();
 
   const experiences = getNormalizedExperiences(apiExperiences);
   const educations = getNormalizedEducations(apiEducations);
+
+  const isLoading = isLoadingExp || isLoadingEdu;
 
   return (
     <section id="experience" className="py-20 border-b border-border/40">
@@ -22,7 +25,10 @@ export function ExperienceTimeline() {
           description="Chronological journey of software engineering roles, team contributions, and academic foundation."
         />
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        {isLoading ? (
+          <TimelineSkeleton />
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
           {/* Work Experience Column */}
           <div className="lg:col-span-7 space-y-8">
             <div className="flex items-center gap-2.5 pb-2 border-b border-border/60">
@@ -105,6 +111,7 @@ export function ExperienceTimeline() {
             </div>
           </div>
         </div>
+        )}
       </div>
     </section>
   );

@@ -4,10 +4,11 @@ import { useSkills } from "@/features/portfolio/about/hooks/use-about";
 import { getNormalizedSkillCategories } from "@/features/portfolio/adapters";
 import { SectionHeader } from "@/components/portfolio/shared/section-header";
 import { FadeIn } from "@/components/portfolio/shared/motion-wrapper";
+import { SkillsGridSkeleton } from "@/components/portfolio/shared/skeletons";
 import { Check } from "lucide-react";
 
 export function SkillsGrid() {
-  const { data: apiSkills } = useSkills();
+  const { data: apiSkills, isLoading } = useSkills();
   const skillCategories = getNormalizedSkillCategories(apiSkills);
 
   return (
@@ -19,7 +20,10 @@ export function SkillsGrid() {
           description="Technologies and frameworks I utilize regularly to build resilient, maintainable software."
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {isLoading ? (
+          <SkillsGridSkeleton />
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {skillCategories.map((cat, idx) => (
             <FadeIn key={cat.category} delay={idx * 0.1}>
               <div className="p-6 rounded-2xl border border-border/80 bg-background/90 space-y-4 h-full shadow-sm">
@@ -47,6 +51,7 @@ export function SkillsGrid() {
             </FadeIn>
           ))}
         </div>
+        )}
       </div>
     </section>
   );

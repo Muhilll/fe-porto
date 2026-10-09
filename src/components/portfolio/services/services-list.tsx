@@ -20,9 +20,10 @@ import { SectionHeader } from "@/components/portfolio/shared/section-header";
 import { FadeIn } from "@/components/portfolio/shared/motion-wrapper";
 import { useServices } from "@/features/portfolio/service/hooks/use-service";
 import { getNormalizedServices } from "@/features/portfolio/adapters";
+import { ServicesGridSkeleton } from "@/components/portfolio/shared/skeletons";
 
 export function ServicesList() {
-  const { data: apiServices } = useServices();
+  const { data: apiServices, isLoading } = useServices();
   const services = getNormalizedServices(apiServices);
 
   const getIcon = (iconName: string) => {
@@ -66,8 +67,11 @@ export function ServicesList() {
           description="High-standard development solutions engineered for reliability, security, and developer ergonomics."
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {services.map((service, idx) => (
+        {isLoading ? (
+          <ServicesGridSkeleton count={4} />
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {services.map((service, idx) => (
             <FadeIn key={service.id} delay={idx * 0.1}>
               <div className="p-8 sm:p-10 rounded-3xl border border-border/80 bg-background/90 hover:border-foreground/30 transition-all duration-300 space-y-8 flex flex-col justify-between h-full shadow-sm">
                 <div className="space-y-4">
@@ -113,8 +117,9 @@ export function ServicesList() {
                 </div>
               </div>
             </FadeIn>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

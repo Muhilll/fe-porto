@@ -11,7 +11,7 @@ import { getNormalizedProfile } from "@/features/portfolio/adapters";
 import { ThemeToggle } from "@/components/portfolio/shared/theme-toggle";
 
 export function PortfolioNavbar() {
-  const { data: apiProfile } = useProfile();
+  const { data: apiProfile, isLoading } = useProfile();
   const profile = getNormalizedProfile(apiProfile);
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -47,8 +47,8 @@ export function PortfolioNavbar() {
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${
           scrolled || mobileMenuOpen
-            ? "bg-background/95 backdrop-blur-md border-b border-border shadow-sm"
-            : "bg-background/70 backdrop-blur-md border-b border-border/40"
+            ? "bg-background/95 backdrop-blur-md border-border shadow-sm"
+            : "bg-background/70 backdrop-blur-md border-border/40"
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -60,11 +60,19 @@ export function PortfolioNavbar() {
               className="flex items-center gap-2.5 group focus:outline-none focus-visible:ring-2 focus-visible:ring-foreground rounded-lg"
             >
               <div className="w-8 h-8 rounded-lg bg-foreground text-background flex items-center justify-center font-mono font-bold text-sm tracking-tight transition-transform group-hover:scale-105 uppercase">
-                {profile.shortName?.charAt(0) || "Z"}
+                {isLoading ? (
+                  <span className="w-3.5 h-3.5 rounded bg-background/40 animate-pulse" />
+                ) : (
+                  profile.shortName?.charAt(0) || "Z"
+                )}
               </div>
               <div className="flex flex-col">
-                <span className="font-semibold text-sm sm:text-base tracking-tight text-foreground leading-none">
-                  {profile.shortName}
+                <span className="font-semibold text-sm sm:text-base tracking-tight text-foreground leading-none min-h-[16px] flex items-center">
+                  {isLoading ? (
+                    <span className="inline-block w-14 h-3.5 rounded bg-muted animate-pulse" />
+                  ) : (
+                    profile.shortName
+                  )}
                 </span>
                 <span className="text-[11px] font-mono text-muted-foreground leading-tight mt-0.5">
                   portfolio

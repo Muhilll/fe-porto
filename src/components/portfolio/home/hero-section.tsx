@@ -7,10 +7,15 @@ import { GithubIcon, LinkedinIcon } from "@/components/portfolio/shared/icons";
 import { motion } from "framer-motion";
 import { useProfile } from "@/features/portfolio/profile/hooks/use-profile";
 import { getNormalizedProfile } from "@/features/portfolio/adapters";
+import { HeroSkeleton } from "@/components/portfolio/shared/skeletons";
 
 export function HeroSection() {
-  const { data: apiProfile } = useProfile();
+  const { data: apiProfile, isLoading } = useProfile();
   const profile = getNormalizedProfile(apiProfile);
+
+  if (isLoading) {
+    return <HeroSkeleton />;
+  }
 
   // Kinetic typing effect
   const [roleIndex, setRoleIndex] = useState(0);

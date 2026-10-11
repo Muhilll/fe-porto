@@ -5,10 +5,15 @@ import { MapPin, Briefcase, CheckCircle2, FileText, ArrowUpRight } from "lucide-
 import { useProfile } from "@/features/portfolio/profile/hooks/use-profile";
 import { getNormalizedProfile } from "@/features/portfolio/adapters";
 import { FadeIn } from "@/components/portfolio/shared/motion-wrapper";
+import { AboutHeroSkeleton } from "@/components/portfolio/shared/skeletons";
 
 export function AboutHero() {
-  const { data: apiProfile } = useProfile();
+  const { data: apiProfile, isLoading } = useProfile();
   const profile = getNormalizedProfile(apiProfile);
+
+  if (isLoading) {
+    return <AboutHeroSkeleton />;
+  }
 
   const isAvailable = profile.availability === "available";
   const isBusy = profile.availability === "busy";

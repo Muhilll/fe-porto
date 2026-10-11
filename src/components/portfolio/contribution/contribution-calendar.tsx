@@ -6,11 +6,13 @@ import { CalendarDay } from "@/services/github";
 import { useGithubContributions } from "@/hooks/use-github-contributions";
 import { FadeIn } from "@/components/portfolio/shared/motion-wrapper";
 import { Calendar, Info } from "lucide-react";
+import { ContributionCalendarSkeleton } from "@/components/portfolio/shared/skeletons";
 
 interface ContributionCalendarProps {
   data?: ContributionData;
   weeks?: CalendarDay[][];
   isLive?: boolean;
+  isLoading?: boolean;
 }
 
 const MONTH_NAMES = [
@@ -22,13 +24,19 @@ export function ContributionCalendar({
   data: propData,
   weeks: propWeeks,
   isLive: propIsLive,
+  isLoading: propIsLoading,
 }: ContributionCalendarProps) {
   const [hoveredDay, setHoveredDay] = useState<{ date: string; count: number } | null>(null);
 
   const hookResult = useGithubContributions();
+  const isLoading = propIsLoading !== undefined ? propIsLoading : (!propData && hookResult.isLoading);
   const data = propData || hookResult.data;
   const weeks = propWeeks && propWeeks.length > 0 ? propWeeks : hookResult.weeks;
   const isLive = propIsLive !== undefined ? propIsLive : hookResult.isLive;
+
+  if (isLoading) {
+    return <ContributionCalendarSkeleton />;
+  }
 
   // Compute month positions mapped to week index
   const monthMap = useMemo(() => {

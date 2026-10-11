@@ -4,10 +4,12 @@ import { GitCommit, GitPullRequest, Star, Flame } from "lucide-react";
 import { ContributionData } from "@/types/portfolio";
 import { useGithubContributions } from "@/hooks/use-github-contributions";
 import { FadeIn } from "@/components/portfolio/shared/motion-wrapper";
+import { ContributionStatsSkeleton } from "@/components/portfolio/shared/skeletons";
 
 interface GithubStatsProps {
   data?: ContributionData;
   isLive?: boolean;
+  isLoading?: boolean;
 }
 
 // Consistent locale formatting to eliminate server/client hydration mismatch
@@ -15,9 +17,14 @@ const formatNumber = (num: number): string => {
   return new Intl.NumberFormat("en-US").format(num);
 };
 
-export function GithubStats({ data: propData }: GithubStatsProps) {
+export function GithubStats({ data: propData, isLoading: propIsLoading }: GithubStatsProps) {
   const hookResult = useGithubContributions();
+  const isLoading = propIsLoading !== undefined ? propIsLoading : (!propData && hookResult.isLoading);
   const data = propData || hookResult.data;
+
+  if (isLoading) {
+    return <ContributionStatsSkeleton />;
+  }
 
   const stats = [
     {

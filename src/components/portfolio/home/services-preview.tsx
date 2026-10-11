@@ -22,9 +22,10 @@ import { SectionHeader } from "@/components/portfolio/shared/section-header";
 import { FadeIn } from "@/components/portfolio/shared/motion-wrapper";
 import { useServices } from "@/features/portfolio/service/hooks/use-service";
 import { getNormalizedServices } from "@/features/portfolio/adapters";
+import { ServicesGridSkeleton } from "@/components/portfolio/shared/skeletons";
 
 export function ServicesPreview() {
-  const { data: apiServices } = useServices();
+  const { data: apiServices, isLoading } = useServices();
   const services = getNormalizedServices(apiServices);
 
   const getIcon = (iconName: string) => {
@@ -78,46 +79,50 @@ export function ServicesPreview() {
         </div>
 
         {/* Services Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {services.map((service, idx) => (
-            <FadeIn key={service.id} delay={idx * 0.1}>
-              <div className="p-8 rounded-2xl border border-border/80 bg-background/90 hover:border-foreground/30 transition-all duration-300 space-y-6 flex flex-col justify-between h-full shadow-sm">
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div className="w-10 h-10 rounded-xl bg-foreground text-background flex items-center justify-center">
-                      {getIcon(service.icon)}
+        {isLoading ? (
+          <ServicesGridSkeleton count={2} />
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {services.map((service, idx) => (
+              <FadeIn key={service.id} delay={idx * 0.1}>
+                <div className="p-8 rounded-2xl border border-border/80 bg-background/90 hover:border-foreground/30 transition-all duration-300 space-y-6 flex flex-col justify-between h-full shadow-sm">
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="w-10 h-10 rounded-xl bg-foreground text-background flex items-center justify-center">
+                        {getIcon(service.icon)}
+                      </div>
+                      <span className="font-mono text-xs text-muted-foreground">
+                        {service.number}
+                      </span>
                     </div>
-                    <span className="font-mono text-xs text-muted-foreground">
-                      {service.number}
-                    </span>
+
+                    <h3 className="text-xl font-semibold text-foreground">
+                      {service.title}
+                    </h3>
+
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      {service.description}
+                    </p>
                   </div>
 
-                  <h3 className="text-xl font-semibold text-foreground">
-                    {service.title}
-                  </h3>
-
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {service.description}
-                  </p>
-                </div>
-
-                <div className="space-y-3 pt-4 border-t border-border/60">
-                  <div className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
-                    Key Highlights
+                  <div className="space-y-3 pt-4 border-t border-border/60">
+                    <div className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
+                      Key Highlights
+                    </div>
+                    <ul className="space-y-2">
+                      {service.features.slice(0, 3).map((feat) => (
+                        <li key={feat} className="flex items-start gap-2.5 text-xs text-foreground/90">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-foreground mt-0.5 shrink-0" />
+                          <span>{feat}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                  <ul className="space-y-2">
-                    {service.features.slice(0, 3).map((feat) => (
-                      <li key={feat} className="flex items-start gap-2.5 text-xs text-foreground/90">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-foreground mt-0.5 shrink-0" />
-                        <span>{feat}</span>
-                      </li>
-                    ))}
-                  </ul>
                 </div>
-              </div>
-            </FadeIn>
-          ))}
-        </div>
+              </FadeIn>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

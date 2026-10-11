@@ -7,9 +7,14 @@ import { LanguagesChart } from "@/components/portfolio/contribution/languages-ch
 import { PinnedRepos } from "@/components/portfolio/contribution/pinned-repos";
 import { GithubIcon } from "@/components/portfolio/shared/icons";
 import { ArrowUpRight } from "lucide-react";
+import { ContributionContainerSkeleton } from "@/components/portfolio/shared/skeletons";
 
 export function ContributionContainer() {
   const { data, weeks, isLive, isLoading } = useGithubContributions();
+
+  if (isLoading) {
+    return <ContributionContainerSkeleton />;
+  }
 
   return (
     <div className="space-y-10">

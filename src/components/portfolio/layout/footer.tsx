@@ -8,7 +8,7 @@ import { useProfile } from "@/features/portfolio/profile/hooks/use-profile";
 import { getNormalizedProfile } from "@/features/portfolio/adapters";
 
 export function PortfolioFooter() {
-  const { data: apiProfile } = useProfile();
+  const { data: apiProfile, isLoading } = useProfile();
   const profile = getNormalizedProfile(apiProfile);
 
   const scrollToTop = () => {
@@ -30,19 +30,37 @@ export function PortfolioFooter() {
           <div className="md:col-span-2 space-y-4">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-lg bg-foreground text-background flex items-center justify-center font-mono font-bold text-sm tracking-tight">
-                {firstLetter}
+                {isLoading ? (
+                  <span className="w-3.5 h-3.5 rounded bg-background/40 animate-pulse" />
+                ) : (
+                  firstLetter
+                )}
               </div>
-              <span className="font-semibold text-base tracking-tight text-foreground">
-                {profile.name}
+              <span className="font-semibold text-base tracking-tight text-foreground min-h-[20px] flex items-center">
+                {isLoading ? (
+                  <span className="inline-block w-28 h-4 rounded bg-muted animate-pulse" />
+                ) : (
+                  profile.name
+                )}
               </span>
             </div>
-            <p className="text-sm text-muted-foreground max-w-md leading-relaxed">
-              {profile.tagline}
+            <p className="text-sm text-muted-foreground max-w-md leading-relaxed min-h-[20px]">
+              {isLoading ? (
+                <span className="inline-block w-64 h-3.5 rounded bg-muted animate-pulse" />
+              ) : (
+                profile.tagline
+              )}
             </p>
             <div className="flex items-center gap-2 pt-2">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono border border-border/80 bg-muted/40 text-muted-foreground">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span>{profile.availabilityText}</span>
+                <span>
+                  {isLoading ? (
+                    <span className="inline-block w-24 h-2.5 rounded bg-muted animate-pulse" />
+                  ) : (
+                    profile.availabilityText
+                  )}
+                </span>
               </div>
             </div>
           </div>

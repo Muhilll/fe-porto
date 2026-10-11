@@ -4,15 +4,22 @@ import { ContributionData } from "@/types/portfolio";
 import { useGithubContributions } from "@/hooks/use-github-contributions";
 import { FadeIn } from "@/components/portfolio/shared/motion-wrapper";
 import { Code2 } from "lucide-react";
+import { LanguagesChartSkeleton } from "@/components/portfolio/shared/skeletons";
 
 interface LanguagesChartProps {
   data?: ContributionData;
   isLive?: boolean;
+  isLoading?: boolean;
 }
 
-export function LanguagesChart({ data: propData }: LanguagesChartProps) {
+export function LanguagesChart({ data: propData, isLoading: propIsLoading }: LanguagesChartProps) {
   const hookResult = useGithubContributions();
+  const isLoading = propIsLoading !== undefined ? propIsLoading : (!propData && hookResult.isLoading);
   const data = propData || hookResult.data;
+
+  if (isLoading) {
+    return <LanguagesChartSkeleton />;
+  }
 
   return (
     <FadeIn>

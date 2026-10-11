@@ -4,12 +4,26 @@ import { useState, useEffect } from "react";
 import { ContributionData } from "@/types/portfolio";
 import { contributionData as fallbackData, generateMockCalendarWeeks } from "@/data/contributions";
 import { CalendarDay, LiveGithubResult } from "@/services/github";
+import { useProfile } from "@/features/portfolio/profile/hooks/use-profile";
 
 export function useGithubContributions(initialUsername?: string) {
+  const { data: profile, isLoading: isProfileLoading } = useProfile();
+
+  const profileGithub = profile?.github;
+  const profileUsername = profileGithub
+    ? profileGithub.replace(/^https?:\/\/(www\.)?github\.com\//i, "").replace(/\/+$/, "").trim()
+    : undefined;
+
+  const targetUsername =
+    initialUsername ||
+    profileUsername ||
+    process.env.NEXT_PUBLIC_GITHUB_USERNAME ||
+    "Muhilll";
+
   const [data, setData] = useState<ContributionData>({
     ...fallbackData,
-    githubUsername: initialUsername || process.env.NEXT_PUBLIC_GITHUB_USERNAME || "Muhilll",
-    githubUrl: `https://github.com/${initialUsername || process.env.NEXT_PUBLIC_GITHUB_USERNAME || "Muhilll"}`,
+    githubUsername: targetUsername,
+    githubUrl: `https://github.com/${targetUsername}`,
   });
   const [weeks, setWeeks] = useState<CalendarDay[][]>([]);
   const [isLive, setIsLive] = useState(false);
@@ -17,17 +31,17 @@ export function useGithubContributions(initialUsername?: string) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Generate initial weeks for instantaneous UI rendering
-    setWeeks(generateMockCalendarWeeks());
+    // If waiting for profile to resolve targetUsername without initialUsername provided
+    if (!initialUsername && isProfileLoading) {
+      return;
+    }
 
     let isMounted = true;
 
     async function loadData() {
       try {
         setIsLoading(true);
-        const url = initialUsername
-          ? `/api/github/contributions?username=${encodeURIComponent(initialUsername)}`
-          : "/api/github/contributions";
+        const url = `/api/github/contributions?username=${encodeURIComponent(targetUsername)}`;
 
         const res = await fetch(url);
         if (!res.ok) {
@@ -39,6 +53,8 @@ export function useGithubContributions(initialUsername?: string) {
           setData(json.data);
           if (json.weeks && json.weeks.length > 0) {
             setWeeks(json.weeks);
+          } else {
+            setWeeks(generateMockCalendarWeeks());
           }
           setIsLive(json.isLive);
           setError(null);
@@ -46,6 +62,12 @@ export function useGithubContributions(initialUsername?: string) {
       } catch (err: any) {
         console.warn("Using fallback contribution data:", err.message);
         if (isMounted) {
+          setData({
+            ...fallbackData,
+            githubUsername: targetUsername,
+            githubUrl: `https://github.com/${targetUsername}`,
+          });
+          setWeeks(generateMockCalendarWeeks());
           setError(err.message);
         }
       } finally {
@@ -60,7 +82,7 @@ export function useGithubContributions(initialUsername?: string) {
     return () => {
       isMounted = false;
     };
-  }, [initialUsername]);
+  }, [targetUsername, initialUsername, isProfileLoading]);
 
   return {
     data,

@@ -6,10 +6,15 @@ import { contactData } from "@/data/contact";
 import { FadeIn } from "@/components/portfolio/shared/motion-wrapper";
 import { useProfile } from "@/features/portfolio/profile/hooks/use-profile";
 import { getNormalizedProfile } from "@/features/portfolio/adapters";
+import { ContactPanelSkeleton } from "@/components/portfolio/shared/skeletons";
 
 export function ContactPanel() {
-  const { data: apiProfile } = useProfile();
+  const { data: apiProfile, isLoading } = useProfile();
   const profile = getNormalizedProfile(apiProfile);
+
+  if (isLoading) {
+    return <ContactPanelSkeleton />;
+  }
 
   const whatsappHref = profile.whatsapp.startsWith("http")
     ? profile.whatsapp

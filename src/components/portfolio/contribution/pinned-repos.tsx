@@ -4,15 +4,22 @@ import { Star, GitFork, ArrowUpRight, FolderGit2 } from "lucide-react";
 import { ContributionData } from "@/types/portfolio";
 import { useGithubContributions } from "@/hooks/use-github-contributions";
 import { FadeIn } from "@/components/portfolio/shared/motion-wrapper";
+import { PinnedReposSkeleton } from "@/components/portfolio/shared/skeletons";
 
 interface PinnedReposProps {
   data?: ContributionData;
   isLive?: boolean;
+  isLoading?: boolean;
 }
 
-export function PinnedRepos({ data: propData }: PinnedReposProps) {
+export function PinnedRepos({ data: propData, isLoading: propIsLoading }: PinnedReposProps) {
   const hookResult = useGithubContributions();
+  const isLoading = propIsLoading !== undefined ? propIsLoading : (!propData && hookResult.isLoading);
   const data = propData || hookResult.data;
+
+  if (isLoading) {
+    return <PinnedReposSkeleton />;
+  }
 
   return (
     <div className="space-y-6">

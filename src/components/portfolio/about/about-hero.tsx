@@ -36,7 +36,7 @@ export function AboutHero() {
                     alt={profile.name}
                     fill
                     unoptimized
-                    className="object-cover transition-transform duration-500 group-hover:scale-105 grayscale hover:grayscale-0"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
                     priority
                   />
                 </div>

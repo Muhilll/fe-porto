@@ -34,10 +34,6 @@ export function ContributionCalendar({
   const weeks = propWeeks && propWeeks.length > 0 ? propWeeks : hookResult.weeks;
   const isLive = propIsLive !== undefined ? propIsLive : hookResult.isLive;
 
-  if (isLoading) {
-    return <ContributionCalendarSkeleton />;
-  }
-
   // Compute month positions mapped to week index
   const monthMap = useMemo(() => {
     const map = new Map<number, string>();
@@ -105,6 +101,10 @@ export function ContributionCalendar({
       return dateStr;
     }
   };
+
+  if (isLoading) {
+    return <ContributionCalendarSkeleton />;
+  }
 
   return (
     <FadeIn>

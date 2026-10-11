@@ -13,11 +13,7 @@ export function HeroSection() {
   const { data: apiProfile, isLoading } = useProfile();
   const profile = getNormalizedProfile(apiProfile);
 
-  if (isLoading) {
-    return <HeroSkeleton />;
-  }
-
-  // Kinetic typing effect
+  // Kinetic typing effect - hooks must be called unconditionally before any early returns
   const [roleIndex, setRoleIndex] = useState(0);
   const [displayedText, setDisplayedText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
@@ -25,6 +21,8 @@ export function HeroSection() {
   const rolesList = profile.rolesList && profile.rolesList.length > 0 ? profile.rolesList : ["Full-Stack Engineer"];
 
   useEffect(() => {
+    if (isLoading) return;
+
     const currentFullRole = rolesList[roleIndex % rolesList.length] || "";
     const typingSpeed = isDeleting ? 40 : 80;
 
@@ -47,7 +45,11 @@ export function HeroSection() {
     }, typingSpeed);
 
     return () => clearTimeout(timer);
-  }, [displayedText, isDeleting, roleIndex, rolesList]);
+  }, [displayedText, isDeleting, roleIndex, rolesList, isLoading]);
+
+  if (isLoading) {
+    return <HeroSkeleton />;
+  }
 
   // Color for availability ping
   const isAvailable = profile.availability === "available";

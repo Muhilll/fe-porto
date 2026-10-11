@@ -81,7 +81,7 @@ export function AboutHero() {
 
                 <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-mono border border-border/80 bg-background text-foreground">
                   <Briefcase className="w-3.5 h-3.5 text-muted-foreground" />
-                  <span>{profile.experienceYears || 2}+ Years Engineering</span>
+                  <span>3+ Years Engineering</span>
                 </div>
 
                 <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-mono border border-border/80 bg-background text-foreground">

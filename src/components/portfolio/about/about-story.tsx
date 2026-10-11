@@ -12,7 +12,7 @@ export function AboutStory() {
           <SectionHeader
             badge="Background"
             title="Engineering Philosophy"
-            description="How I approach building durable digital tools and collaborative software."
+            description="Building practical, maintainable, and reliable software through thoughtful engineering."
           />
           <p className="text-base text-muted-foreground leading-relaxed">
             {aboutNarrative.intro}

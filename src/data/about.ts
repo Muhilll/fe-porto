@@ -2,19 +2,19 @@ import { ExperienceItem, EducationItem, SkillCategory } from "@/types/portfolio"
 
 export const aboutNarrative = {
   intro:
-    "I'm a full-stack engineer passionate about crafting software that feels effortless to use and maintain. Over the past 4+ years, I have worked across the entire web lifecycle—from architecting database schemas and designing high-throughput REST/GraphQL APIs, to creating responsive, accessible user interfaces.",
+    "I'm a full-stack software engineer with 3+ years of software development experience, building web applications, cross-platform mobile apps, and integrated information systems. I focus on translating real-world requirements into well-structured solutions, balancing functionality, maintainability, and user experience throughout the development process.",
   philosophy: [
     {
       title: "Simplicity Over Complexity",
-      description: "Write code that does one thing well. Avoid pre-mature abstractions and prefer straightforward, readable implementations.",
+      description: "Build solutions that are easy to understand, maintain, and extend. I prefer clear code, appropriate abstractions, and straightforward implementations over unnecessary complexity.",
     },
     {
-      title: "Performance by Default",
-      description: "Fast loading times, negligible bundle footprints, and smooth frame rates are core features, not secondary optimizations.",
+      title: "Architecture with Purpose",
+      description: "Choose architectural patterns based on project requirements. I value clear separation of responsibilities, organized business logic, and well-defined API boundaries to keep applications easier to develop and maintain.",
     },
     {
-      title: "Resilient Architecture",
-      description: "Build fault-tolerant APIs, validate inputs strictly at boundaries, and structure codebases that scale cleanly with teams.",
+      title: "Reliability & User-Centered Design",
+      description: "Build applications that handle data consistently, validate inputs, enforce appropriate access controls, and provide intuitive user experiences. I aim to make software reliable for the people who depend on it.",
     },
   ],
 };

@@ -114,13 +114,25 @@ export function HeroSection() {
             transition={{ duration: 0.55, delay: 0.2, ease: "easeOut" }}
             className="flex flex-wrap items-center gap-3 pt-2"
           >
-            <Link
-              href="/projects"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold bg-foreground text-background hover:opacity-90 transition-all shadow-sm focus:outline-none focus:ring-2 focus:ring-foreground/20"
-            >
-              <span>Explore Projects</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
+            {profile.resumeUrl && profile.resumeUrl !== "#" ? (
+              <a
+                href={profile.resumeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold bg-foreground text-background hover:opacity-90 transition-all shadow-sm focus:outline-none focus:ring-2 focus:ring-foreground/20"
+              >
+                <FileText className="w-4 h-4" />
+                <span>Resume</span>
+              </a>
+            ) : (
+              <a
+                href="/about"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold bg-foreground text-background hover:opacity-90 transition-all shadow-sm focus:outline-none focus:ring-2 focus:ring-foreground/20"
+              >
+                <FileText className="w-4 h-4" />
+                <span>Resume</span>
+              </a>
+            )}
 
             <Link
               href="/contact"
@@ -130,17 +142,13 @@ export function HeroSection() {
               <ArrowUpRight className="w-4 h-4" />
             </Link>
 
-            {profile.resumeUrl && profile.resumeUrl !== "#" && (
-              <a
-                href={profile.resumeUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-colors"
-              >
-                <FileText className="w-4 h-4" />
-                <span>Resume</span>
-              </a>
-            )}
+            <Link
+              href="/projects"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-colors"
+            >
+              <span>Explore Projects</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
           </motion.div>
 
           {/* Social Links Row */}

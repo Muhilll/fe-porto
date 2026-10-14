@@ -17,6 +17,8 @@ export const aboutNarrative = {
       description: "Build applications that handle data consistently, validate inputs, enforce appropriate access controls, and provide intuitive user experiences. I aim to make software reliable for the people who depend on it.",
     },
   ],
+
+  
 };
 
 export const experienceData: ExperienceItem[] = [
